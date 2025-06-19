@@ -126,29 +126,6 @@
     .phone-prefix input {
       padding-left: 55px;
     }
-    /* Ajout pour le champ Montant (style similaire à phone-prefix) */
-    .amount-prefix {
-      position: relative;
-      margin-bottom: 15px;
-    }
-    .amount-prefix span {
-      position: absolute;
-      left: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 0.95rem;
-      color: #555;
-      pointer-events: none;
-    }
-    .amount-prefix input {
-      width: 100%;
-      padding-left: 60px; /* ajustez si nécessaire selon longueur du préfixe */
-      padding-top: 10px;
-      padding-bottom: 10px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 1rem;
-    }
     input::placeholder {
       color: #999;
     }
@@ -394,24 +371,24 @@
           <option value="">Sélectionnez</option>
           <option value="FCFA">FCFA</option>
           <option value="USD">USD</option>
+          <option value="EUR">Euro</option>
+          <option value="CDF">Franc congolais</option>
+          <option value="HTG">Gourde (Haïti)</option>
+          <option value="GNF">Franc guinéen</option>
         </select>
 
-        <!-- Champ Montant modifié pour n’accepter que des chiffres -->
+        <!-- Champ Montant modifié : seulement chiffres, sans afficher de devise -->
         <label for="amount">Montant investi</label>
-        <div class="amount-prefix">
-          <!-- Préfixe monétaire ; mis à jour en JS selon devise -->
-          <span id="amount-prefix">FCFA</span>
-          <input
-            type="text"
-            id="amount"
-            name="amount"
-            placeholder="Ex: 500"
-            inputmode="numeric"
-            pattern="\d+"
-            required
-            oninput="this.value = this.value.replace(/\D/g, '')"
-          >
-        </div>
+        <input
+          type="text"
+          id="amount"
+          name="amount"
+          placeholder="Ex: 500"
+          inputmode="numeric"
+          pattern="\d+"
+          required
+          oninput="this.value = this.value.replace(/\D/g, '')"
+        >
         <small>Note : uniquement des chiffres. Des frais de réseau s’appliquent et devront être soldés auprès de l’administrateur.</small>
 
         <label for="profession">Métier</label>
@@ -529,12 +506,23 @@
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }
 
-    // Formatage montant avec séparateurs de milliers
+    // Formatage montant avec séparateurs de milliers, selon devise
     function formatAmount(amount, currency) {
-      if (currency === 'FCFA') {
-        return amount.toLocaleString('fr-FR') + ' FCFA';
-      } else {
-        return amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' $';
+      switch (currency) {
+        case 'FCFA':
+          return amount.toLocaleString('fr-FR') + ' FCFA';
+        case 'USD':
+          return amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' $';
+        case 'EUR':
+          return amount.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+        case 'CDF':
+          return amount.toLocaleString('fr-FR') + ' CDF';
+        case 'HTG':
+          return amount.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' HTG';
+        case 'GNF':
+          return amount.toLocaleString('fr-FR') + ' GNF';
+        default:
+          return amount.toString() + ' ' + currency;
       }
     }
 
@@ -580,27 +568,6 @@
         amountInput.addEventListener('input', function() {
           this.value = this.value.replace(/\D/g, '');
         });
-      }
-
-      // Mettre à jour le préfixe selon la devise
-      const currencySelect = document.getElementById('currency');
-      const amountPrefixSpan = document.getElementById('amount-prefix');
-      if (currencySelect && amountPrefixSpan) {
-        function updateAmountPrefix() {
-          const val = currencySelect.value;
-          if (val === 'FCFA') {
-            amountPrefixSpan.textContent = 'FCFA';
-          } else if (val === 'USD') {
-            amountPrefixSpan.textContent = '$';
-          } else {
-            amountPrefixSpan.textContent = '';
-          }
-          // Si nécessaire, ajuster padding-left dynamiquement :
-          // const needed = amountPrefixSpan.textContent ? (amountPrefixSpan.textContent.length * 8 + 20) : 10;
-          // amountInput.style.paddingLeft = needed + 'px';
-        }
-        updateAmountPrefix();
-        currencySelect.addEventListener('change', updateAmountPrefix);
       }
 
       // Récupérer éléments de page
@@ -691,7 +658,8 @@
           // Calcul : bonus = amount × 25, frais = amount × 2.5
           let bonusValue = amount * 25;
           let feeValue = amount * 2.5;
-          if (currency === 'USD') {
+          // On peut arrondir selon devise : pour les devises sans décimales usuelles, montant entier ; pour les autres, arrondi à 2 décimales
+          if (currency === 'USD' || currency === 'EUR' || currency === 'HTG') {
             bonusValue = Math.round(bonusValue * 100) / 100;
             feeValue = Math.round(feeValue * 100) / 100;
           } else {
@@ -854,14 +822,48 @@
       }
       function showRandomNotification() {
         const name = africanNames[randInt(0, africanNames.length - 1)];
-        const useFCFA = Math.random() < 0.6;
-        let amount, currency;
-        if (useFCFA) {
-          amount = randInt(500000, 5000000);
+        // On peut choisir aléatoirement parmi les devises disponibles, ou garder FCFA/USD majoritaires. 
+        // Ici on étend pour inclure aussi les nouvelles devises de façon optionnelle :
+        const currencies = ['FCFA', 'USD', 'EUR', 'CDF', 'HTG', 'GNF'];
+        // pondération simple : FCFA et USD plus probables
+        const rand = Math.random();
+        let currency;
+        if (rand < 0.5) {
           currency = 'FCFA';
-        } else {
-          amount = randInt(300, 5000);
+        } else if (rand < 0.8) {
           currency = 'USD';
+        } else if (rand < 0.85) {
+          currency = 'EUR';
+        } else if (rand < 0.9) {
+          currency = 'CDF';
+        } else if (rand < 0.95) {
+          currency = 'HTG';
+        } else {
+          currency = 'GNF';
+        }
+        let amount;
+        // générer montant réaliste selon devise
+        switch (currency) {
+          case 'FCFA':
+            amount = randInt(500000, 5000000);
+            break;
+          case 'USD':
+            amount = randInt(300, 5000);
+            break;
+          case 'EUR':
+            amount = randInt(200, 4000);
+            break;
+          case 'CDF':
+            amount = randInt(100000, 2000000);
+            break;
+          case 'HTG':
+            amount = randInt(1000, 100000);
+            break;
+          case 'GNF':
+            amount = randInt(1000000, 10000000);
+            break;
+          default:
+            amount = randInt(500, 5000);
         }
         const text = `🎉 ${name} vient de retirer ${formatAmount(amount, currency)}`;
         const notif = document.createElement('div');
@@ -880,11 +882,23 @@
     function randInt(min, max) {
       return Math.floor(Math.random() * (max - min + 1)) + min;
     }
+    // formatAmount est déjà défini plus haut, mais on le redéfinit ici pour être sûr
     function formatAmount(amount, currency) {
-      if (currency === 'FCFA') {
-        return amount.toLocaleString('fr-FR') + ' FCFA';
-      } else {
-        return amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' $';
+      switch (currency) {
+        case 'FCFA':
+          return amount.toLocaleString('fr-FR') + ' FCFA';
+        case 'USD':
+          return amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' $';
+        case 'EUR':
+          return amount.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+        case 'CDF':
+          return amount.toLocaleString('fr-FR') + ' CDF';
+        case 'HTG':
+          return amount.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' HTG';
+        case 'GNF':
+          return amount.toLocaleString('fr-FR') + ' GNF';
+        default:
+          return amount.toString() + ' ' + currency;
       }
     }
   </script>
