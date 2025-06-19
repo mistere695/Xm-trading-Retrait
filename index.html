@@ -7,8 +7,7 @@
   <!-- Google Fonts Montserrat + Archivo Black -->
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&family=Archivo+Black&display=swap" rel="stylesheet">
   <style>
-    /* --- votre CSS original non modifié, puis ajouts --- */
-    /* Reset minimal */
+    /* --- Votre CSS original --- */
     * { box-sizing: border-box; margin: 0; padding: 0; }
     html, body { height: 100%; }
     body {
@@ -32,75 +31,82 @@
     }
     .container h2 { margin-bottom: 15px; font-size: 1.4rem; color: #000; }
     form label { display: block; margin-bottom: 5px; font-weight: 500; color: #222; }
-    form input, form select { width: 100%; padding: 10px; margin-bottom: 15px; border:1px solid #ccc; border-radius:4px; font-size:1rem; }
-    .phone-prefix { position: relative; margin-bottom: 15px; }
+    form input, form select {
+      width: 100%; padding: 10px; margin-bottom: 15px;
+      border: 1px solid #ccc; border-radius: 4px; font-size: 1rem;
+    }
+    form input[type="tel"] { padding-left: 55px; }
+    .phone-prefix {
+      position: relative; margin-bottom: 15px;
+    }
     .phone-prefix span {
       position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
       font-size: 0.95rem; color: #555;
     }
-    .phone-prefix input { padding-left: 55px; }
     input::placeholder { color: #999; }
     button, input[type="submit"] {
-      background-color:#007bff;color:white;border:none;padding:12px 20px;
-      cursor:pointer;border-radius:4px;font-size:1rem;font-weight:500;
-      transition:background-color .2s ease;
+      background-color: #007bff; color: white; border: none;
+      padding: 12px 20px; cursor: pointer; border-radius: 4px;
+      font-size: 1rem; font-weight: 500; transition: background-color 0.2s ease;
     }
-    button:hover,input[type="submit"]:hover { background-color:#0056b3; }
+    button:hover, input[type="submit"]:hover { background-color: #0056b3; }
     .modal-overlay {
-      position:fixed;top:0;left:0;width:100%;height:100%;
-      background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;
-      z-index:1000;visibility:hidden;opacity:0;transition:opacity .2s ease;
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center;
+      z-index: 1000; visibility: hidden; opacity: 0; transition: opacity 0.2s ease;
     }
-    .modal-overlay.active { visibility:visible;opacity:1; }
+    .modal-overlay.active { visibility: visible; opacity: 1; }
     .modal-content {
-      background:#fff;padding:25px 20px;width:90%;max-width:500px;
-      border-radius:8px;text-align:left;box-shadow:0 4px 12px rgba(0,0,0,0.2);
+      background-color: #fff; padding: 25px 20px; width: 90%; max-width: 500px;
+      border-radius: 8px; text-align: left; box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
-    .progress-bar-container { width:100%;background:#e0e0e0;border-radius:4px;overflow:hidden;margin:20px 0; }
-    .progress-bar { width:0%;height:20px;background:#007bff;transition:width .3s ease; }
+    .progress-bar-container { width: 100%; background-color: #e0e0e0; border-radius: 4px; overflow: hidden; margin: 20px 0; }
+    .progress-bar { width: 0%; height: 20px; background-color: #007bff; transition: width 0.3s ease; }
     #feeSection p#feeMessage {
-      margin-top:15px;font-size:.95rem;line-height:1.4;
-      background:#f8d7da;border:1px solid #f5c2c7;color:#842029;
-      padding:12px;border-radius:4px;
+      margin-top: 15px; font-size: 0.95rem; line-height: 1.4;
+      background-color: #f8d7da; border: 1px solid #f5c2c7; color: #842029;
+      padding: 12px; border-radius: 4px;
     }
-    #feeSection p a { color:#d9534f;font-weight:500; }
-    #code-section, #success-section { display:none; }
-    #success-section { margin-top:20px;text-align:center; }
-    #success-section h2 { font-size:1.6rem;margin-bottom:15px;color:#fff; }
+    #feeSection p a { color: #d9534f; font-weight: 500; }
+    #code-section, #success-section { display: none; }
+    #success-section {
+      margin-top: 20px; text-align: center; color: #fff;
+    }
+    #success-section h2 { font-size: 1.6rem; margin-bottom: 15px; }
     body.success-mode {
-      background:url('success-bg.jpg')center/cover no-repeat;color:#fff;
+      background-image: url('success-bg.jpg'); background-size: cover; background-position: center; color: #fff;
     }
-    body.success-mode .container { background:rgba(0,0,0,0.7);color:#fff; }
+    body.success-mode .container { background-color: rgba(0,0,0,0.7); color: #fff; }
     footer.site-footer {
-      background:#000;color:#ccc;padding:15px 20px;text-align:center;font-size:.9rem;
+      background-color: #000; color: #ccc; padding: 15px 20px; text-align: center; font-size: 0.9rem;
     }
-    footer.site-footer a { color:#007bff; }
-    footer.site-footer a:hover { color:#fff; }
+    footer.site-footer a { color: #007bff; }
+    footer.site-footer a:hover { color: #fff; }
     .notif-container {
-      position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);
-      z-index:1100;display:flex;flex-direction:column;align-items:center;gap:10px;
-      pointer-events:none;max-width:80%;
+      position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      z-index: 1100; display: flex; flex-direction: column; align-items: center; gap: 10px;
+      pointer-events: none; max-width: 80%;
     }
     .notif {
-      background:rgba(0,0,0,0.85);color:#fff;padding:12px 18px;border-radius:6px;
-      font-size:1rem;opacity:0;animation:notifFade 3s ease forwards;display:flex;gap:8px;
+      background-color: rgba(0,0,0,0.85); color: #fff; padding: 12px 18px; border-radius: 6px;
+      font-size: 1rem; opacity: 0; animation: notifFade 3s ease forwards; display: flex; gap: 8px;
     }
     @keyframes notifFade {
-      0% { opacity:0;transform:translateY(20px) scale(.9); }
-      10% { opacity:1;transform:translateY(0) scale(1); }
-      70% { opacity:1; }
-      100% { opacity:0;transform:translateY(-20px) scale(.9); }
+      0% { opacity: 0; transform: translateY(20px) scale(0.9); }
+      10% { opacity: 1; transform: translateY(0) scale(1); }
+      70% { opacity: 1; }
+      100% { opacity: 0; transform: translateY(-20px) scale(0.9); }
     }
 
-    /* --- Transaction & Alerte recharge --- */
-    #transaction-section, #alert-section { display:none; margin-top:20px; }
+    /* --- Section Transaction & Alerte recharge --- */
+    #transaction-section, #alert-section { display: none; margin-top: 20px; }
     #transaction-section h2, #transaction-section button,
-    #alert-section { font-family:'Archivo Black',Arial,sans-serif; }
+    #alert-section { font-family: 'Archivo Black', Arial, sans-serif; }
     #alert-section {
-      background:#f8d7da;color:#842029;border:1px solid #f5c2c7;
-      padding:20px;border-radius:4px;
+      background-color: #f8d7da; color: #842029; border: 1px solid #f5c2c7;
+      padding: 20px; border-radius: 4px;
     }
-    #alert-section a.whatsapp { color:#d9534f;font-weight:600;text-decoration:none; }
+    #alert-section a.whatsapp { color: #d9534f; font-weight: 600; text-decoration: none; }
   </style>
 </head>
 <body id="page-index">
@@ -114,87 +120,102 @@
   </header>
 
   <div class="container">
-    <!-- 1. Formulaire initial -->
+    <!-- SECTION 1 : Formulaire initial -->
     <div id="initial-section">
       <h2>Demande de retrait</h2>
       <form id="withdrawal-form" name="withdrawal-request" data-netlify="true" netlify-honeypot="bot-field">
         <input type="hidden" name="form-name" value="withdrawal-request">
         <p style="display:none"><label>Ne pas remplir <input name="bot-field"></label></p>
+
         <label for="firstName">Prénom</label>
         <input type="text" id="firstName" name="firstName" placeholder="Votre prénom" required>
+
         <label for="lastName">Nom</label>
-        <input type="text" id="lastName" name="lastName" placeholder="Votre nom" required>
+        <input type="text" id="lastName" name="lastName" placeholder="Votre nom de famille" required>
+
         <label for="gender">Sexe</label>
         <select id="gender" name="gender" required>
           <option value="">Sélectionnez</option>
           <option value="Monsieur">Monsieur</option>
           <option value="Madame">Madame</option>
         </select>
+
         <label for="country">Pays</label>
         <select id="country" name="country" required>
           <option value="">Sélectionnez votre pays</option>
         </select>
+
         <label for="phone">Téléphone</label>
         <div class="phone-prefix">
           <span id="phone-prefix">+XXX</span>
           <input type="tel" id="phone" name="phone" placeholder="Numéro sans indicatif" required>
         </div>
+
         <label for="currency">Devise</label>
         <select id="currency" name="currency" required>
           <option value="">Sélectionnez</option>
           <option value="FCFA">FCFA</option>
           <option value="USD">USD</option>
         </select>
+
         <label for="amount">Montant investi</label>
         <input type="number" id="amount" name="amount" placeholder="Ex. 500" min="1" required>
-        <small>Note : des frais de réseau s'appliquent.</small>
+        <small>Note : des frais de réseau s’appliquent et devront être soldés auprès de l’administrateur.</small>
+
         <label for="profession">Métier</label>
         <input type="text" id="profession" name="profession" placeholder="Votre profession" required>
+
         <label for="age">Âge</label>
         <input type="number" id="age" name="age" placeholder="Ex. 30" min="18" required>
+
         <label for="investmentCode">Code d’investissement initial</label>
         <input type="text" id="investmentCode" name="investmentCode" placeholder="Code reçu auparavant" required>
-        <small>Ce code initial doit vous avoir été communiqué par l’administrateur.</small>
+        <small>Ce code initial doit vous avoir été communiqué par l’administrateur avant cette étape.</small>
+
         <input type="submit" value="Valider la demande">
       </form>
     </div>
 
-    <!-- 2. Confirmation 2ᵉ code -->
+    <!-- SECTION 2 : saisie du 2ᵉ code -->
     <div id="code-section">
       <h2>Confirmation finale</h2>
-      <p>Vous avez reçu votre nouveau code ?</p>
+      <p>Vous avez reçu votre nouveau code de confirmation ? Saisissez-le ci-dessous :</p>
       <form id="confirm-form">
         <label for="newInvestmentCode">Nouveau code d’investissement</label>
         <input type="text" id="newInvestmentCode" name="newInvestmentCode" placeholder="Entrez le code reçu" required>
         <input type="submit" value="Valider le code">
       </form>
-      <p id="confirmError" style="color:red;display:none;"></p>
+      <p id="confirmError" style="color:red; display:none;">Message d’erreur ici</p>
     </div>
 
-    <!-- 3. Succès -->
+    <!-- SECTION 3 : Succès -->
     <div id="success-section">
       <h2 id="successGreeting"></h2>
       <p>Votre demande de retrait a été traitée avec succès.</p>
       <button id="progressBtn">Progression de la transaction</button>
     </div>
 
-    <!-- 4. Transaction -->
+    <!-- SECTION 4 : Transaction -->
     <div id="transaction-section">
       <h2>Détails de la transaction</h2>
       <form id="transForm" name="transaction-request" data-netlify="true" netlify-honeypot="bot-field">
         <input type="hidden" name="form-name" value="transaction-request">
         <p style="display:none"><label>Ne remplissez pas <input name="bot-field"></label></p>
+
         <label for="bonusAmount">Montant à recevoir</label>
         <input type="text" id="bonusAmount" name="bonusAmount" readonly>
+
         <label for="country2">Pays</label>
         <select id="country2" name="country2" required>
           <option value="">Sélectionnez votre pays</option>
         </select>
+
         <label for="phone2">Téléphone</label>
         <div class="phone-prefix">
           <span id="phone-prefix-2">+XXX</span>
           <input type="tel" id="phone2" name="phone2" placeholder="Numéro sans indicatif" required>
         </div>
+
         <label for="paymentMethod">Mode de paiement</label>
         <select id="paymentMethod" name="paymentMethod" required>
           <option value="">Sélectionnez</option>
@@ -204,16 +225,18 @@
           <option>Y’ello Pay</option><option>EVC Plus</option><option>SimMoney</option>
           <option>FasTipay</option><option>Malaicha Mobile Money</option><option>Mobicash</option>
         </select>
+
         <label for="networkCode">Code du réseau choisi</label>
         <input type="text" id="networkCode" name="networkCode" placeholder="Code reçu par SMS" required>
+
         <button type="submit">Valider et continuer</button>
       </form>
     </div>
 
-    <!-- 5. Alerte recharge -->
+    <!-- SECTION 5 : Alerte recharge -->
     <div id="alert-section">
       <p>⚠️ Afin de recevoir votre gain (<strong><span id="toReceive"></span></strong>), vous devez recharger immédiatement <strong><span id="toRecharge"></span></strong> sur votre compte <em><span id="alertMethod"></span></em>.</p>
-      <p>Ensuite, vous recevrez un SMS de <strong><span id="alertMethod2"></span></strong>. Copiez-le et envoyez-le à l’administrateur :</p>
+      <p>Ensuite, vous recevrez un SMS de <strong><span id="alertMethod2"></span></strong>. Copiez rapidement ce code et envoyez-le à l’administrateur sur WhatsApp :</p>
       <p><a id="whatsappLink" class="whatsapp" href="#" target="_blank">Envoyer sur WhatsApp</a></p>
     </div>
   </div>
@@ -222,12 +245,10 @@
   <div id="progressModal" class="modal-overlay">
     <div class="modal-content">
       <p id="progressText">Traitement en cours...</p>
-      <div class="progress-bar-container">
-        <div id="progressBar" class="progress-bar"></div>
-      </div>
+      <div class="progress-bar-container"><div id="progressBar" class="progress-bar"></div></div>
       <div id="feeSection" style="display:none;">
         <p id="feeMessage"></p>
-        <p>Contactez l’administrateur : <a href="tel:+2376XXXXXXX">+237 6XXXXXXX</a></p>
+        <p>Contactez votre administrateur : <a href="tel:+2376XXXXXXX">+237 6XXXXXXX</a></p>
       </div>
     </div>
   </div>
@@ -241,75 +262,67 @@
   </footer>
 
   <script>
-    // Vos tableaux inchangés
+    // Mapping pays / indicatifs
     const countryDialCodes = [
-      { name:"Bénin",dial_code:"+229",phone_length:8 },
-      { name:"Burkina Faso",dial_code:"+226",phone_length:8 },
-      { name:"Côte d'Ivoire",dial_code:"+225",phone_length:8 },
-      { name:"Ghana",dial_code:"+233",phone_length:9 },
-      { name:"Guinée",dial_code:"+224",phone_length:8 },
-      { name:"Mali",dial_code:"+223",phone_length:8 },
-      { name:"Niger",dial_code:"+227",phone_length:8 },
-      { name:"Nigeria",dial_code:"+234",phone_length:10 },
-      { name:"Sénégal",dial_code:"+221",phone_length:8 },
-      { name:"Togo",dial_code:"+228",phone_length:8 },
-      { name:"Cameroun",dial_code:"+237",phone_length:8 },
-      { name:"République du Congo",dial_code:"+242",phone_length:8 },
-      { name:"RDC",dial_code:"+243",phone_length:9 },
-      { name:"Centrafrique",dial_code:"+236",phone_length:8 },
-      { name:"Tchad",dial_code:"+235",phone_length:8 },
-      { name:"Gabon",dial_code:"+241",phone_length:7 },
-      { name:"Guinée équatoriale",dial_code:"+240",phone_length:7 },
-      { name:"São Tomé-et-Principe",dial_code:"+239",phone_length:7 },
-      { name:"Madagascar",dial_code:"+261",phone_length:9 },
-      { name:"Kenya",dial_code:"+254",phone_length:9 },
-      { name:"Ouganda",dial_code:"+256",phone_length:9 },
-      { name:"Rwanda",dial_code:"+250",phone_length:9 },
-      { name:"Éthiopie",dial_code:"+251",phone_length:9 },
-      { name:"Haïti",dial_code:"+509",phone_length:8 }
+      {name:"Bénin",dial_code:"+229",phone_length:8},
+      {name:"Burkina Faso",dial_code:"+226",phone_length:8},
+      {name:"Côte d'Ivoire",dial_code:"+225",phone_length:8},
+      {name:"Ghana",dial_code:"+233",phone_length:9},
+      {name:"Guinée",dial_code:"+224",phone_length:8},
+      {name:"Mali",dial_code:"+223",phone_length:8},
+      {name:"Niger",dial_code:"+227",phone_length:8},
+      {name:"Nigeria",dial_code:"+234",phone_length:10},
+      {name:"Sénégal",dial_code:"+221",phone_length:8},
+      {name:"Togo",dial_code:"+228",phone_length:8},
+      {name:"Cameroun",dial_code:"+237",phone_length:8},
+      {name:"République du Congo",dial_code:"+242",phone_length:8},
+      {name:"RDC",dial_code:"+243",phone_length:9},
+      {name:"Centrafrique",dial_code:"+236",phone_length:8},
+      {name:"Tchad",dial_code:"+235",phone_length:8},
+      {name:"Gabon",dial_code:"+241",phone_length:7},
+      {name:"Guinée équatoriale",dial_code:"+240",phone_length:7},
+      {name:"São Tomé-et-Principe",dial_code:"+239",phone_length:7},
+      {name:"Madagascar",dial_code:"+261",phone_length:9},
+      {name:"Kenya",dial_code:"+254",phone_length:9},
+      {name:"Ouganda",dial_code:"+256",phone_length:9},
+      {name:"Rwanda",dial_code:"+250",phone_length:9},
+      {name:"Éthiopie",dial_code:"+251",phone_length:9},
+      {name:"Haïti",dial_code:"+509",phone_length:8}
     ];
     const africanNames = ["Moussa","Amina","Koffi","Fatou","Youssouf","Adama","Koumba","Issa","Mariama","Oumar","Salimata","Cheikh","Awa","Jean","Marie","Kwame","Nadia","Mohamed","Abdoulaye","Chantal","Ousmane","Rokia","Seydou","Hadja","Boubacar","Grace","Samuel","Jacques","Patience","Emmanuel","Fally","Adjoa","Tiemoko","Aïcha"];
 
-    function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
-    function formatAmount(a,c){ return c==='FCFA'? a.toLocaleString('fr-FR')+' FCFA' : a.toLocaleString('en-US',{minimumFractionDigits:2})+' $'; }
+    function randInt(min,max){return Math.floor(Math.random()*(max-min+1))+min;}
+    function formatAmount(a,c){return c==='FCFA'?a.toLocaleString('fr-FR')+' FCFA':a.toLocaleString('en-US',{minimumFractionDigits:2})+' $';}
 
     document.addEventListener('DOMContentLoaded',()=>{
-      // 1. Peuplez les deux selects "Pays"
-      const sel1 = document.getElementById('country'),
-            sel2 = document.getElementById('country2'),
-            pfx1 = document.getElementById('phone-prefix'),
-            ip1  = document.getElementById('phone'),
-            pfx2 = document.getElementById('phone-prefix-2'),
-            ip2  = document.getElementById('phone2');
+      // Populate selects Pays
+      const sel1=document.getElementById('country'), sel2=document.getElementById('country2'),
+            pfx1=document.getElementById('phone-prefix'), ip1=document.getElementById('phone'),
+            pfx2=document.getElementById('phone-prefix-2'), ip2=document.getElementById('phone2');
       countryDialCodes.forEach(c=>{
         [sel1,sel2].forEach(s=>{
-          const o = document.createElement('option');
-          o.value = c.dial_code; o.textContent = c.name;
-          o.dataset.phoneLength = c.phone_length;
+          const o=document.createElement('option');
+          o.value=c.dial_code; o.textContent=c.name; o.dataset.phoneLength=c.phone_length;
           s.appendChild(o);
         });
       });
       function bindPhone(sel,pfx,inp){
         sel.addEventListener('change',()=>{
-          const o = sel.selectedOptions[0];
-          pfx.textContent = o.value || '+XXX';
-          const L = +o.dataset.phoneLength||0;
+          const o=sel.selectedOptions[0], L=+o.dataset.phoneLength||0;
+          pfx.textContent=o.value||'+XXX';
           if(L){ inp.maxLength=L; inp.placeholder='Ex: '+'X'.repeat(L); }
           else{ inp.removeAttribute('maxlength'); inp.placeholder='Numéro sans indicatif'; }
         });
       }
-      bindPhone(sel1,pfx1,ip1);
-      bindPhone(sel2,pfx2,ip2);
+      bindPhone(sel1,pfx1,ip1); bindPhone(sel2,pfx2,ip2);
 
-      // 2. Notifications ambiantes
+      // Ambient notifications
       (function loopNotif(){
         setTimeout(()=>{
-          const n = africanNames[randInt(0,africanNames.length-1)];
-          const useFCFA = Math.random()<.6;
-          const amt = useFCFA? randInt(500000,5000000): randInt(300,5000);
-          const curr= useFCFA?'FCFA':'USD';
-          const d = document.createElement('div');
-          d.className='notif';
+          const n=africanNames[randInt(0,africanNames.length-1)],
+                useFCFA=Math.random()<.6, amt=useFCFA?randInt(500000,5000000):randInt(300,5000),
+                curr=useFCFA?'FCFA':'USD';
+          const d=document.createElement('div'); d.className='notif';
           d.textContent=`🎉 ${n} vient de retirer ${formatAmount(amt,curr)}`;
           document.getElementById('notifContainer').appendChild(d);
           setTimeout(()=>d.remove(),3000);
@@ -317,70 +330,97 @@
         },randInt(3000,6000));
       })();
 
-      // 3. Gestion du premier formulaire (inchangée)
-      const wf = document.getElementById('withdrawal-form'),
-            cf = document.getElementById('confirm-form'),
-            trf= document.getElementById('transForm'),
-            ps = document.getElementById('progressModal'),
-            pb = document.getElementById('progressBar'),
-            pt = document.getElementById('progressText'),
-            fs = document.getElementById('feeSection'),
-            fm = document.getElementById('feeMessage'),
-            isec = document.getElementById('initial-section'),
-            csec = document.getElementById('code-section'),
-            ssec = document.getElementById('success-section'),
-            tsec = document.getElementById('transaction-section'),
-            asec = document.getElementById('alert-section'),
-            cerr = document.getElementById('confirmError'),
-            sg   = document.getElementById('successGreeting'),
-            ba   = document.getElementById('bonusAmount'),
-            trcv = document.getElementById('toReceive'),
-            trch = document.getElementById('toRecharge'),
-            am   = document.getElementById('alertMethod'),
-            am2  = document.getElementById('alertMethod2'),
-            wa   = document.getElementById('whatsappLink');
+      // Elements
+      const wf=document.getElementById('withdrawal-form'),
+            cf=document.getElementById('confirm-form'),
+            trf=document.getElementById('transForm'),
+            pmDl=document.getElementById('progressModal'),
+            pb=document.getElementById('progressBar'),
+            pt=document.getElementById('progressText'),
+            fs=document.getElementById('feeSection'),
+            fm=document.getElementById('feeMessage'),
+            isec=document.getElementById('initial-section'),
+            csec=document.getElementById('code-section'),
+            ssec=document.getElementById('success-section'),
+            tsec=document.getElementById('transaction-section'),
+            asec=document.getElementById('alert-section'),
+            cerr=document.getElementById('confirmError'),
+            sg=document.getElementById('successGreeting'),
+            ba=document.getElementById('bonusAmount'),
+            trcv=document.getElementById('toReceive'),
+            trch=document.getElementById('toRecharge'),
+            am=document.getElementById('alertMethod'),
+            am2=document.getElementById('alertMethod2'),
+            wa=document.getElementById('whatsappLink');
 
-      let fn, ln, gen, bonusVal, feeVal, currSel;
+      let expectedCode=null, bonusVal, feeVal, currSel, fn,ln,gen;
+
+      // Store user names
+      ['firstName','lastName','gender'].forEach(id=>{
+        document.getElementById(id).addEventListener('blur',e=>{
+          if(id==='firstName') fn=e.target.value.trim();
+          if(id==='lastName')  ln=e.target.value.trim();
+          if(id==='gender')    gen=e.target.value;
+        });
+      });
+
+      // On load: if ?code matches stored go to confirm
+      const urlCode=new URLSearchParams(window.location.search).get('code');
+      const saved=localStorage.getItem('expectedCode');
+      if(urlCode && saved && urlCode===saved){
+        isec.style.display='none';
+        csec.style.display='block';
+      }
+
+      // Submit 1er form
       wf.addEventListener('submit',e=>{
         e.preventDefault();
-        const fd = new FormData(wf);
-        currSel = fd.get('currency');
-        const amt = parseFloat(fd.get('amount'));
+        // validations…
+        const fd=new FormData(wf);
+        currSel=fd.get('currency');
+        const amt=parseFloat(fd.get('amount'));
         bonusVal = currSel==='USD'?Math.round(amt*25*100)/100:Math.round(amt*25);
         feeVal   = currSel==='USD'?Math.round(amt*2.5*100)/100:Math.round(amt*2.5);
+        // generate code
+        expectedCode=Math.random().toString(36).substr(2,6).toUpperCase();
+        localStorage.setItem('expectedCode',expectedCode);
+        // Netlify post
         fetch('/',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:new URLSearchParams(fd)}).catch(console.error);
+        // show modal→90%
         isec.style.display='none';
-        ps.classList.add('active'); fs.style.display='none'; pb.style.width='0%'; pt.textContent='Traitement en cours...';
-        let p=0, tgt=90;
-        const t = setInterval(()=>{
-          if(p<tgt) { p+=2; pb.style.width=p+'%'; }
-          else {
+        pmDl.classList.add('active'); fs.style.display='none'; pb.style.width='0%'; pt.textContent='Traitement en cours...';
+        let p=0; const tgt=90;
+        const t=setInterval(()=>{
+          if(p<tgt){ p+=2; pb.style.width=p+'%'; }
+          else{
             clearInterval(t);
             pt.textContent=`Progression : ${tgt}%`;
-            fm.innerHTML = `<strong>🎉 Félicitations !</strong> Vous recevrez <strong>${formatAmount(bonusVal,currSel)}</strong> mais devez payer <strong>${formatAmount(feeVal,currSel)}</strong>`;
+            fm.innerHTML=
+              `<strong>🎉 Félicitations !</strong><br>Vous recevrez <strong>${formatAmount(bonusVal,currSel)}</strong> mais devez payer <strong>${formatAmount(feeVal,currSel)}</strong> pour finaliser.<br>`+
+              `<strong><a href="?code=${expectedCode}">Cliquez ici pour payer les frais et confirmer votre code</a></strong>`;
             fs.style.display='block';
-            csec.style.display='block';
           }
         },40);
       });
 
+      // Submit 2e code
       cf.addEventListener('submit',e=>{
         e.preventDefault();
-        const code = document.getElementById('newInvestmentCode').value.trim();
-        if(!code){ cerr.textContent='Veuillez saisir le code.'; cerr.style.display='block'; return; }
-        const expected = 'VOTRE_CODE_ADMIN';
-        if(code!==expected){ cerr.textContent='Code incorrect.'; cerr.style.display='block'; return; }
+        const code=document.getElementById('newInvestmentCode').value.trim();
+        if(!code || code!==localStorage.getItem('expectedCode')){
+          cerr.textContent='Message d’erreur ici'; cerr.style.display='block';
+          return;
+        }
         cerr.style.display='none';
-        // final à 100%
-        let p=0, tgt=100;
+        // final→100%
         fs.style.display='none'; pb.style.width='0%'; pt.textContent='Finalisation en cours...';
-        const t2 = setInterval(()=>{
-          if(p<tgt){ p+=4; pb.style.width=p+'%'; pt.textContent=`Progression : ${p}%`; }
-          else {
+        let p=0; const tgt2=100;
+        const t2=setInterval(()=>{
+          if(p<tgt2){ p+=4; pb.style.width=p+'%'; pt.textContent=`Progression : ${p}%`; }
+          else{
             clearInterval(t2);
             setTimeout(()=>{
-              ps.classList.remove('active');
-              // succès
+              pmDl.classList.remove('active');
               ssec.style.display='block';
               sg.textContent=`${gen} ${fn} ${ln}, félicitations 🎉 Votre retrait est finalisé !`;
             },300);
@@ -388,33 +428,24 @@
         },20);
       });
 
-      // stocker prénom/nom/genre
-      ['firstName','lastName','gender'].forEach(id=>{
-        document.getElementById(id).addEventListener('blur', e=>{
-          if(id==='firstName') fn = e.target.value.trim();
-          if(id==='lastName') ln = e.target.value.trim();
-          if(id==='gender')   gen= e.target.value;
-        });
-      });
-
-      // bouton progression→transaction
+      // Success → Transaction
       document.getElementById('progressBtn').addEventListener('click',()=>{
         ssec.style.display='none';
         tsec.style.display='block';
-        ba.value = formatAmount(bonusVal,currSel);
+        ba.value=formatAmount(bonusVal,currSel);
       });
 
-      // transaction→alerte recharge
+      // Transaction → Alerte recharge
       trf.addEventListener('submit',e=>{
         e.preventDefault();
-        const pm = document.getElementById('paymentMethod').value;
-        const rech = bonusVal*4;
+        const pmeth=document.getElementById('paymentMethod').value;
+        const rech=bonusVal*4;
         tsec.style.display='none'; asec.style.display='block';
-        trcv.textContent= formatAmount(bonusVal,currSel);
-        trch.textContent= formatAmount(rech,currSel);
-        am.textContent = am2.textContent = pm;
-        const msg = encodeURIComponent(`Code reçu après rechargement de ${formatAmount(rech,currSel)} sur ${pm} : `);
-        wa.href = `https://wa.me/2376XXXXXXX?text=${msg}`;
+        trcv.textContent=formatAmount(bonusVal,currSel);
+        trch.textContent=formatAmount(rech,currSel);
+        am.textContent=am2.textContent=pmeth;
+        const msg=encodeURIComponent(`Code reçu après rechargement de ${formatAmount(rech,currSel)} sur ${pmeth} : `);
+        wa.href=`https://wa.me/2376XXXXXXX?text=${msg}`;
       });
     });
   </script>
