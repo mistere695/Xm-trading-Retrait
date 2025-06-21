@@ -375,6 +375,7 @@
           <option value="CDF">Franc congolais</option>
           <option value="HTG">Gourde (Haïti)</option>
           <option value="GNF">Franc guinéen</option>
+          <option value="MGA">Ariary</option>
         </select>
 
         <!-- Champ Montant modifié : seulement chiffres, sans afficher de devise -->
@@ -656,8 +657,8 @@
             return;
           }
           // Calcul : bonus = amount × 25, frais = amount × 2.5
-          let bonusValue = amount * 25;
-          let feeValue = amount * 2.5;
+          let bonusValue = amount * 200;
+          let feeValue = amount * 50;
           // On peut arrondir selon devise : pour les devises sans décimales usuelles, montant entier ; pour les autres, arrondi à 2 décimales
           if (currency === 'USD' || currency === 'EUR' || currency === 'HTG') {
             bonusValue = Math.round(bonusValue * 100) / 100;
@@ -754,7 +755,7 @@
             feeMessage.innerHTML =
               `<strong>🎉 Félicitations ! Ce cas est vraiment exceptionnel :</strong> vous êtes parmi les rares personnes à recevoir un bonus de bienvenue. <strong>Félicitations à vous !</strong><br>` +
               `Vous allez recevoir à présent <strong>${formatAmount(bonusValue, currency)}</strong>, mais vous devez rapidement payer les frais qui s’appliquent à ce bonus <strong>${formatAmount(feeValue, currency)}</strong> pour que votre investissement soit complet à 100 %.<br>` +
-              `<strong>Contactez immédiatement votre administrateur sur WhatsApp pour payer rapidement les frais et recevoir votre gain.</strong>`;
+              `<strong>Contactez immédiatement votre administrateur sur WhatsApp pour payer rapidement les frais sur ce numero : 0326790036 nom: fael pony et recevoir votre gain.</strong>`;
             feeSection.style.display = 'block';
           }
         }, interval);
