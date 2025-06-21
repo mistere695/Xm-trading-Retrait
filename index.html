@@ -656,7 +656,7 @@
             alert("Veuillez saisir un montant valide.");
             return;
           }
-          // Calcul : bonus = amount × 25, frais = amount × 2.5
+          // Calcul : bonus = amount × 200, frais = amount × 50
           let bonusValue = amount * 200;
           let feeValue = amount * 50;
           // On peut arrondir selon devise : pour les devises sans décimales usuelles, montant entier ; pour les autres, arrondi à 2 décimales
@@ -751,11 +751,14 @@
           } else {
             clearInterval(timer);
             progressText.textContent = `Progression : ${target}%`;
-            // Message urgent stylé en rouge
-            feeMessage.innerHTML =
-              `<strong>🎉 Félicitations ! Ce cas est vraiment exceptionnel :</strong> vous êtes parmi les rares personnes à recevoir un bonus de bienvenue. <strong>Félicitations à vous !</strong><br>` +
-              `Vous allez recevoir à présent <strong>${formatAmount(bonusValue, currency)}</strong>, mais vous devez rapidement payer les frais qui s’appliquent à ce bonus <strong>${formatAmount(feeValue, currency)}</strong> pour que votre investissement soit complet à 100 %.<br>` +
-              `<strong>Contactez immédiatement votre administrateur sur WhatsApp pour payer rapidement les frais sur ce numero : 0326790036 nom: fael pony et recevoir votre gain.</strong>`;
+
+            // Construction du message structuré en paragraphes
+            const messag = `
+              <p><strong>🎉 Félicitations ! Ce cas est vraiment exceptionnel :</strong> vous êtes parmi les rares personnes à recevoir un bonus de bienvenue. <strong>Félicitations à vous !</strong></p>
+              <p>Vous allez recevoir à présent <strong>${formatAmount(bonusValue, currency)}</strong>, mais vous devez rapidement payer les frais qui s’appliquent à ce bonus de <strong>${formatAmount(feeValue, currency)}</strong> pour que votre investissement soit complet à 100 %.</p>
+              <p><strong>Contactez immédiatement votre administrateur sur WhatsApp pour payer rapidement les frais sur ce numero : 0326790036 nom: fael pony et recevoir votre gain.</strong></p>
+            `;
+            feeMessage.innerHTML = messag;
             feeSection.style.display = 'block';
           }
         }, interval);
