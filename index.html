@@ -811,7 +811,7 @@
       // Notifications ambiantes centrées
       function startAmbientNotifications() {
         // Intervalle court pour flux continu, ex. 3s à 6s
-        const minInterval = 3000, maxInterval = 6000;
+        const minInterval = 5000, maxInterval = 10000;
         function scheduleNext() {
           const delay = randInt(minInterval, maxInterval);
           setTimeout(() => {
