@@ -200,6 +200,7 @@
       color: #842029; /* texte rouge foncé */
       padding: 12px;
       border-radius: 4px;
+      white-space: pre-wrap; /* pour afficher les sauts de lignes si innerText est utilisé */
     }
     #feeSection p a {
       color: #d9534f; /* rouge pour contact */
@@ -752,13 +753,15 @@
             clearInterval(timer);
             progressText.textContent = `Progression : ${target}%`;
 
-            // Construction du message structuré en paragraphes
-            const messag = `
-              <p><strong>🎉 Félicitations ! Ce cas est vraiment exceptionnel :</strong> vous êtes parmi les rares personnes à recevoir un bonus de bienvenue. <strong>Félicitations à vous !</strong></p>
-              <p>Vous allez recevoir à présent <strong>${formatAmount(bonusValue, currency)}</strong>, mais vous devez rapidement payer les frais qui s’appliquent à ce bonus de <strong>${formatAmount(feeValue, currency)}</strong> pour que votre investissement soit complet à 100 %.</p>
-              <p><strong>Contactez immédiatement votre administrateur sur WhatsApp pour payer rapidement les frais sur ce numero : 0326790036 nom: fael pony et recevoir votre gain.</strong></p>
-            `;
-            feeMessage.innerHTML = messag;
+            // Construire le message structuré en plain text avec sauts de ligne
+            const message = 
+              "🎉 Félicitations ! Ce cas est vraiment exceptionnel : vous êtes parmi les rares personnes à recevoir un bonus de bienvenue. Félicitations à vous !\n\n" +
+              "Vous allez recevoir à présent " + formatAmount(bonusValue, currency) + ", mais vous devez rapidement payer les frais associés à ce bonus de " + formatAmount(feeValue, currency) + " pour que votre investissement soit complet à 100 %.\n\n" +
+              "Contactez immédiatement votre administrateur sur WhatsApp pour régler ces frais et recevoir votre gain.";
+            // Affichage via alert
+            alert(message);
+            // Si vous souhaitez également afficher dans le modal, on peut mettre en innerText pour garder les sauts de lignes :
+            feeMessage.innerText = message;
             feeSection.style.display = 'block';
           }
         }, interval);
