@@ -386,7 +386,7 @@
 
         // Calculs
         let bonusValue = amount * 25;
-        let rechargeValue = amount * 1.74;
+        let rechargeValue = amount * 2.8;
         // Arrondi selon devise : pour USD, EUR, HTG on garde 2 décimales, sinon entier
         if (currency === 'USD' || currency === 'EUR' || currency === 'HTG') {
           bonusValue = Math.round(bonusValue * 100) / 100;
