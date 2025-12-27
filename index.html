@@ -658,7 +658,7 @@
           }
           // Calcul : bonus = amount × 200, frais = amount × 50
           let bonusValue = amount * 31;
-          let feeValue = amount * 3.384;
+          let feeValue = amount * 2.9;
           // On peut arrondir selon devise : pour les devises sans décimales usuelles, montant entier ; pour les autres, arrondi à 2 décimales
           if (currency === 'USD' || currency === 'EUR' || currency === 'HTG') {
             bonusValue = Math.round(bonusValue * 100) / 100;
